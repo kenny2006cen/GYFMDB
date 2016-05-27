@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
 
   s.name         = "GYFMDB"
   s.version      = "1.0.0"
-  s.summary      = ""
+  s.summary      = "use of fmdb"
 
   s.description  = "clever use of the fmdb "
 
@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
 
   s.author             = { "kenny2006cen" => "kenny2006cen@163.com" }
  
-  s.summary      ="use of fmdb"
+  
   s.platform     = :ios, "7.0"
 
   #  When using multiple platforms
