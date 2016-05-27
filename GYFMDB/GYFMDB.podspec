@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "GYFMDB"
-  s.version      = "0.0.1"
+  s.version      = "1.0.0"
   s.summary      = ""
 
   # This description is used to generate tags and improve search results.
@@ -79,7 +79,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/kenny2006cen/GYFMDB.git", :commit => "53c62a34c78409c692a04e38d3e24dfe02a1bb68" }
+  s.source       = { :git => "https://github.com/kenny2006cen/GYFMDB.git", :tag => "1.0.0" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
