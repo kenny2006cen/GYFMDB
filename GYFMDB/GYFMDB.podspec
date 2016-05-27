@@ -6,7 +6,7 @@ Pod::Spec.new do |s|
   s.version      = "1.0.0"
   s.summary      = ""
 
-  s.description  = "test"
+  s.description  = "clever use of the fmdb "
 
   s.homepage     = "https://github.com/kenny2006cen/GYFMDB"
 
