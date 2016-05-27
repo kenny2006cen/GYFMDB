@@ -6,17 +6,16 @@ Pod::Spec.new do |s|
   s.version      = "1.0.0"
   s.summary      = ""
 
-  s.description  = <<-DESC
-                   DESC
+  s.description  = "test"
 
   s.homepage     = "https://github.com/kenny2006cen/GYFMDB"
 
-  s.license      = "MIT (example)"
+  s.license      = "MIT"
 
 
   s.author             = { "kenny2006cen" => "kenny2006cen@163.com" }
  
-
+  s.summary      ="use of fmdb"
   s.platform     = :ios, "7.0"
 
   #  When using multiple platforms
