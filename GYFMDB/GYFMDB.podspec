@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/kenny2006cen/GYFMDB.git", :tag => "1.0.0" }
 
 
-  s.source_files  = "GYFMDB", "GYFMDB/GYFMDB/*.{h,m}"
+  s.source_files  = "GYFMDB", "GYFMDB/**/GYFMDB.{h,m}"
   #s.exclude_files = "Classes/Exclude"
 
   # s.public_header_files = "Classes/**/*.h"
