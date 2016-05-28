@@ -11,9 +11,6 @@
 
 @implementation User
 
--(NSDictionary*)mapDic{
 
- return  @{@"userId":ObjectINT};
-}
 
 @end

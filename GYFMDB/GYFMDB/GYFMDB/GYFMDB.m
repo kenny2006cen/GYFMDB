@@ -35,7 +35,7 @@
     FMDatabase *localDB;
 }
 
-@property (strong, nonatomic) FMDatabaseQueue * dbQueue;
+//@property (strong, nonatomic) FMDatabaseQueue * dbQueue;
 
 @end
 

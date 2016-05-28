@@ -24,6 +24,8 @@ typedef void (^QueryFinishBlock) (FMResultSet *set);
 
 @interface GYFMDB : NSObject
 
+@property (strong, nonatomic) FMDatabaseQueue * dbQueue;
+
 -(instancetype)sharedDB;
 
 - (id)initWithDBWithPath:(NSString *)dbPath;

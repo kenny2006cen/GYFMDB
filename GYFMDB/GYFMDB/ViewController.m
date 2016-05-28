@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "GYFMDB/GYFMDB.h"
 #import "User.h"
+#import "NSObject+DBRunTimeSave.h"
 
 @interface ViewController ()
 
@@ -19,7 +20,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-  //  [[GYFMDB sharedInstance]createTableWithName:@"User" ColumnNameFromModel:[User new]];
+    [[GYFMDB sharedInstance]createTableWithName:@"User" ColumnNameFromModel:[User new]];
 }
 - (IBAction)insert:(id)sender {
     
@@ -53,6 +54,16 @@
     }
 }
 - (IBAction)selectByKey:(id)sender {
+    
+    NSLog(@"property Dic =%@",[User getAllProperties]);
+    
+    User *user =[[User alloc]init];
+    
+    //  user.userId=@1;
+    user.userName=@"jack888";
+    
+    [user save];
+
 }
 
 - (IBAction)update:(id)sender {
