@@ -265,16 +265,16 @@
         
         
     }
-
-   //  NSString *updateSql = [NSString stringWithFormat:@"UPDATE '%@' SET %@  WHERE %@='%@'",tableName,keyString,propertyName,value];
-    
-     NSString *updateSql = [NSString stringWithFormat:@"REPLACE INTO '%@' (%@) VALUES('%@')",tableName,propertyName,value];
+//sqlite> UPDATE COMPANY SET ADDRESS = 'Texas', SALARY = 20000.00
+//     NSString *updateSql = [NSString stringWithFormat:@"UPDATE '%@' SET %@  WHERE %@='%@'",tableName,keyString,propertyName,value];
+     NSString *updateSql = [NSString stringWithFormat:@"UPDATE User SET userName = 'kenny2006' WHERE userName = 'jack222'"];
+//     NSString *updateSql = [NSString stringWithFormat:@"REPLACE INTO '%@' (%@) VALUES('%@')",tableName,propertyName,value];
     
     [[GYFMDB sharedInstance].dbQueue inDatabase:^(FMDatabase *db) {
         
         NSError *error =nil;
         
-        flag = [db executeQuery:updateSql values:@[] error:&error];
+        flag = [db executeUpdate:updateSql withErrorAndBindings:&error];
         
         if (flag) {
             NSLog(@"更新成功");
