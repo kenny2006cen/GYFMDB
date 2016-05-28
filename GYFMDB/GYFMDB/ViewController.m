@@ -19,19 +19,31 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+  //  [[GYFMDB sharedInstance]createTableWithName:@"User" ColumnNameFromModel:[User new]];
+}
+- (IBAction)insert:(id)sender {
+    
     User *user =[[User alloc]init];
     
     user.userId=@1;
     user.userName=@"jack";
     
+    [[GYFMDB sharedInstance]insertModel:user ToTable:@"User"];
     
-    [[GYFMDB sharedInstance]createTableWithName:@"User" ColumnNameFromModel:user];
-}
-- (IBAction)insert:(id)sender {
+    //获取绑定的 Model 并 保存 Model 的属性信息
+  
 }
 - (IBAction)delete:(id)sender {
 }
 - (IBAction)select:(id)sender {
+    
+    
+  NSArray *array = [[GYFMDB sharedInstance]queryModels:[User class] FromTable:@"User"];
+    
+    for ( User *user in array) {
+        
+        NSLog(@"user.userName =%@",user.userName);
+    }
 }
 - (IBAction)selectByKey:(id)sender {
 }

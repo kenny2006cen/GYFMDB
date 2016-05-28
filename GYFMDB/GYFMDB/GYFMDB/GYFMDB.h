@@ -58,9 +58,10 @@ typedef void (^QueryFinishBlock) (FMResultSet *set);
 
 -(BOOL)deleteTableWithName:(NSString *)tableName;
 
--(BOOL)insertModelToDB:(id)model;
+-(BOOL)insertModel:(id)model ToTable:(NSString*)tableName;
 
--(void)querySql:(NSString *)sql finishBlock:(QueryFinishBlock)block;
+-(BOOL)deleteModel:(id)model FromTable:(NSString*)tableName;
 
--(BOOL)deleteModelFromDB:(id)model;
+-(NSArray*)queryModels:(Class)modelClass FromTable:(NSString*)tableName;
+
 @end
