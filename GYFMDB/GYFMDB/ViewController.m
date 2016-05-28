@@ -26,7 +26,7 @@
     User *user =[[User alloc]init];
     
     user.userId=@1;
-    user.userName=@"jack";
+    user.userName=@"jack222";
     
     [[GYFMDB sharedInstance]insertModel:user ToTable:@"User"];
     
@@ -34,6 +34,13 @@
   
 }
 - (IBAction)delete:(id)sender {
+    
+    User *user =[[User alloc]init];
+    
+     user.userId=@1;
+     user.userName=@"jack222";
+    
+    [[GYFMDB sharedInstance]deleteModel:user FromTable:@"User" ByCondition:@"userName" EqualsTo:@"jack222"];
 }
 - (IBAction)select:(id)sender {
     
@@ -46,6 +53,16 @@
     }
 }
 - (IBAction)selectByKey:(id)sender {
+}
+
+- (IBAction)update:(id)sender {
+    
+    User *user =[[User alloc]init];
+    
+  //  user.userId=@1;
+    user.userName=@"jack333";
+    
+    [[GYFMDB sharedInstance]updateModel:user FromTable:@"User" ByCondition:@"userName" EqualsTo:@"jack222"];
 }
 
 - (void)didReceiveMemoryWarning {

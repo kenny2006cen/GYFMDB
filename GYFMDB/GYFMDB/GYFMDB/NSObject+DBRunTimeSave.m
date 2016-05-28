@@ -47,17 +47,7 @@
     free(ivars);
     
 //    // 属性操作
-//    unsigned  outCount =0;
-//    objc_property_t * properties = class_copyPropertyList([self class], &outCount);
-//    for (int i = 0; i < outCount; i++) {
-//        objc_property_t property = properties[i];
-//   
-//        NSLog(@"property's name: %s", property_getName(property));
-// 
-//    }
-//    
-//    free(properties);
-    
+
     return dic;
 }
 

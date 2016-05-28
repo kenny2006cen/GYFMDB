@@ -56,11 +56,13 @@ typedef void (^QueryFinishBlock) (FMResultSet *set);
 //根据模型生成表以及表结构
 -(BOOL)createTableWithName:(NSString *)tableName ColumnNameFromModel:(id)model;
 
--(BOOL)deleteTableWithName:(NSString *)tableName;
+//-(BOOL)deleteTableWithName:(NSString *)tableName;
 
 -(BOOL)insertModel:(id)model ToTable:(NSString*)tableName;
 
--(BOOL)deleteModel:(id)model FromTable:(NSString*)tableName;
+-(BOOL)deleteModel:(id)model FromTable:(NSString*)tableName ByCondition:(NSString*)propertyName EqualsTo:(NSString*)value;
+
+-(BOOL)updateModel:(id)model FromTable:(NSString*)tableName ByCondition:(NSString*)propertyName EqualsTo:(NSString*)value;
 
 -(NSArray*)queryModels:(Class)modelClass FromTable:(NSString*)tableName;
 

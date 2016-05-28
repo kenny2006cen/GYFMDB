@@ -182,6 +182,96 @@
     return flag;
 }
 
+// 根据属性删除字段
+-(BOOL)deleteModel:(id)model FromTable:(NSString*)tableName ByCondition:(NSString*)propertyName EqualsTo:(NSString*)value{
+
+    __block BOOL flag =NO;
+
+     NSString *deleteSql = [NSString stringWithFormat:@"DELETE FROM '%@' WHERE %@ = '%@'",tableName,propertyName,value];
+    
+    [[GYFMDB sharedInstance].dbQueue inDatabase:^(FMDatabase *db) {
+     
+        NSError *error =nil;
+        
+       flag = [db executeQuery:deleteSql values:@[] error:&error];
+        
+        if (flag) {
+            NSLog(@"删除成功");
+        }
+    }];
+    return flag;
+}
+
+-(BOOL)deleteAllFromTable:(NSString*)tableName{
+    
+    __block BOOL flag =NO;
+    
+    NSString *deleteSql = [NSString stringWithFormat:@"DELETE FROM '%@'",tableName];
+
+    [[GYFMDB sharedInstance].dbQueue inDatabase:^(FMDatabase *db) {
+        
+        NSError *error =nil;
+        
+        flag = [db executeQuery:deleteSql values:@[] error:&error];
+    }];
+    
+    return flag;
+}
+
+-(BOOL)updateModel:(id)model FromTable:(NSString*)tableName ByCondition:(NSString*)propertyName EqualsTo:(NSString*)value{
+
+    __block BOOL flag =NO;
+
+    NSArray *attributes = [model attributePropertyList];
+    
+    NSMutableString *keyString =[NSMutableString new];
+    NSMutableString *valueString = [NSMutableString new];
+    
+    for (int i=0; i<attributes.count; i++) {
+        
+        NSString *key = attributes[i];
+        
+        //获取对应属性的值
+        id value = [model valueForKey:key];
+        
+        if(value == nil||[value isKindOfClass:[NSNull class]])
+        {
+           // value = @"''";
+        }
+        else{
+            //有值的时候才更新
+            if (i!=attributes.count-1) {
+                [keyString appendFormat:@"%@,",key];
+                [valueString appendFormat:@"'%@',",value];
+                
+            }
+            else{
+                [keyString appendFormat:@"%@",key];
+                [valueString appendFormat:@"'%@'",value];
+                
+            }
+        }
+        
+        
+    }
+
+   //  NSMutableString *updateSql = [NSMutableString stringWithFormat:@"UPDATE '%@' SET %@ WHERE %@=?",tableName,keyString,valueString];
+    
+     NSString *updateSql = [NSString stringWithFormat:@"REPLACE INTO '%@' (%@) VALUES('%@')",tableName,propertyName,value];
+    
+    [[GYFMDB sharedInstance].dbQueue inDatabase:^(FMDatabase *db) {
+        
+        NSError *error =nil;
+        
+        flag = [db executeQuery:updateSql values:@[] error:&error];
+        
+        if (flag) {
+            NSLog(@"更新成功");
+        }
+    }];
+    return flag;
+}
+
 -(NSArray*)queryModels:(Class)modelClass FromTable:(NSString*)tableName{
     
     __block NSMutableArray *selectArray = [NSMutableArray array];
@@ -203,16 +293,16 @@
             
             NSDictionary *dic = [resultSet resultDictionary];
             
-          //   id myobj = [[modelClass alloc] init];
-            User *myobj = [[User alloc]init];
+             id myobj = [[modelClass alloc] init];
+          //  User *myobj = [[User alloc]init];
             
             for (NSString *key in [dic allKeys]) {
                 
                 if ([key isEqualToString:@"id"]) {
                    // return ;
+                    //不存储主键
                 }
                 else{
-                
                     id value = dic[key];
                 //增加属性
            //     objc_setAssociatedObject(myobj, [key UTF8String], value, OBJC_ASSOCIATION_RETAIN_NONATOMIC);

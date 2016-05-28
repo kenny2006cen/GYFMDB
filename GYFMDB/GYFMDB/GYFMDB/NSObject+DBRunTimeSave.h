@@ -15,7 +15,7 @@
 #define ObjectBLOB @"BLOB"
 #define ObjectDATETIME @"DATETIME"
 
-#define PRIMARY_KEY     @"Id"
+#define PRIMARY_KEY     @"id"
 
 @interface NSObject (DBRunTimeSave)
 
@@ -23,4 +23,9 @@
 -(NSArray *)attributePropertyList;
 
 -(NSDictionary*)mapDic;//类型映射字典
+
+-(NSString*)getPrimaryId;
+
+-(void)setPrimaryId:(NSString*)idString;
+
 @end
