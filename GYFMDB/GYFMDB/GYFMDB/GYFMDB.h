@@ -8,6 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+#import "FMDatabase.h"
+#import "FMDatabaseQueue.h"
+
+typedef void (^QueryFinishBlock) (FMResultSet *set);
+
 @interface GYKeyValueItem : NSObject
 
 @property (strong, nonatomic) NSString *key;
@@ -46,7 +51,16 @@
 - (BOOL)deleteObjectsByKeyArray:(NSArray *)objectKeyArray fromTable:(NSString *)tableName;
 
 /***********************************/
++ (instancetype)sharedInstance;
 
+//根据模型生成表以及表结构
+-(BOOL)createTableWithName:(NSString *)tableName ColumnNameFromModel:(id)model;
 
+-(BOOL)deleteTableWithName:(NSString *)tableName;
 
+-(BOOL)insertModelToDB:(id)model;
+
+-(void)querySql:(NSString *)sql finishBlock:(QueryFinishBlock)block;
+
+-(BOOL)deleteModelFromDB:(id)model;
 @end

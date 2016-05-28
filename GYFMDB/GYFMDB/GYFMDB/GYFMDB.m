@@ -10,6 +10,7 @@
 
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
+#import "NSObject+DBRunTimeSave.h"
 
 #ifdef DEBUG
 #define debugLog(...)    NSLog(__VA_ARGS__)
@@ -26,7 +27,10 @@
 
 #define PATH_CACHE    [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
 
-@interface GYFMDB()
+@interface GYFMDB(){
+
+    FMDatabase *localDB;
+}
 
 @property (strong, nonatomic) FMDatabaseQueue * dbQueue;
 
@@ -34,19 +38,7 @@
 
 @implementation GYFMDB
 
-- (id)initDBWithName:(NSString *)dbName {
-    self = [super init];
-    if (self) {
-        NSString * dbPath = [PATH_DOCUMENT stringByAppendingPathComponent:dbName];
-        debugLog(@"dbPath = %@", dbPath);
-        if (_dbQueue) {
-            [self close];
-        }
-        _dbQueue = [FMDatabaseQueue databaseQueueWithPath:dbPath];
-    }
-    return self;
-}
-
+/*
 - (id)initWithDBWithPath:(NSString *)dbPath {
     self = [super init];
     if (self) {
@@ -58,6 +50,22 @@
     }
     return self;
 }
+*/
+-(id)init{
+    self = [super init];
+    if (self) {
+        
+        localDB = [FMDatabase databaseWithPath:self.dbPath];
+        
+        [self configDbQueue];
+    }
+    return self;
+}
+
+-(void)configDbQueue{
+
+    _dbQueue = [FMDatabaseQueue databaseQueueWithPath:self.dbPath];
+}
 
 + (instancetype)sharedInstance
 {
@@ -66,14 +74,54 @@
    
     dispatch_once(&onceToken,^{
         _singleton = [[GYFMDB alloc]init];
+        
     });
     return _singleton;
 }
 
--(BOOL)createDataBaseWithPath:(NSString*)dbPath{
+-(NSString*)dbPath{
 
-    return YES;
+    NSString * dbPath = [PATH_DOCUMENT stringByAppendingPathComponent:@"data.db"];
+
+     debugLog(@"dbPath = %@", dbPath);
+    return  dbPath;
+    
 }
+
+-(BOOL)createTableWithName:(NSString *)tableName ColumnNameFromModel:(id)model{
+//IndexsForProperys:(NSArray*)array
+    NSArray *attributes = [model attributePropertyList];
+    
+    NSMutableString *mutSql = [NSMutableString stringWithFormat:@"CREATE TABLE IF NOT EXISTS '%@' (",tableName];
+    
+    [mutSql appendFormat:@"id INTEGER PRIMARY KEY AUTOINCREMENT,"];
+    
+    for (int i=0; i<attributes.count; i++) {
+        
+         NSString *key = attributes[i];
+        
+        if (i!=attributes.count-1) {
+            [mutSql appendFormat:@"'%@' TEXT, ", key];
+
+        }
+        else{
+             [mutSql appendFormat:@"'%@' TEXT)", key];
+        }
+        
+    }
+    
+    __block BOOL flag =NO;
+    
+    [[GYFMDB sharedInstance].dbQueue inDatabase:^(FMDatabase *db) {
+       
+       flag = [db executeUpdate:mutSql];
+        
+    }];
+    
+    return flag;
+    
+}
+
 - (void)close {
     [_dbQueue close];
     _dbQueue = nil;
