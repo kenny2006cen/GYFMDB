@@ -224,6 +224,7 @@
 
     NSArray *attributes = [model attributePropertyList];
     
+    
     NSMutableString *keyString =[NSMutableString new];
     NSMutableString *valueString = [NSMutableString new];
     
@@ -250,12 +251,22 @@
                 [valueString appendFormat:@"'%@'",value];
                 
             }
+//            if (i!=attributes.count-1) {
+//                [keyString appendFormat:@"%@=?,",key];
+//                [valueString appendFormat:@"'%@',",value];
+//                
+//            }
+//            else{
+//                [keyString appendFormat:@"%@=?",key];
+//                [valueString appendFormat:@"'%@'",value];
+//                
+//            }
         }
         
         
     }
 
-   //  NSMutableString *updateSql = [NSMutableString stringWithFormat:@"UPDATE '%@' SET %@ WHERE %@=?",tableName,keyString,valueString];
+   //  NSString *updateSql = [NSString stringWithFormat:@"UPDATE '%@' SET %@  WHERE %@='%@'",tableName,keyString,propertyName,value];
     
      NSString *updateSql = [NSString stringWithFormat:@"REPLACE INTO '%@' (%@) VALUES('%@')",tableName,propertyName,value];
     
@@ -269,6 +280,7 @@
             NSLog(@"更新成功");
         }
     }];
+    
     return flag;
 }
 
