@@ -18,7 +18,7 @@
 
 #define primaryId     @"pk" //主键字段
 
-@interface NSObject (DBRunTimeSave)
+@interface NSObject (GYFMDB)
 
 /** 主键 id */
 @property (nonatomic, strong)   NSNumber  *    pk;

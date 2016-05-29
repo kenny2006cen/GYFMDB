@@ -7,7 +7,7 @@
 //
 
 #import "User.h"
-#import "NSObject+DBRunTimeSave.h"
+#import "NSObject+GYFMDB.h"
 
 @implementation User
 

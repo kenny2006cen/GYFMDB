@@ -6,11 +6,11 @@
 //  Copyright © 2016年 jlc. All rights reserved.
 //
 
-#import "NSObject+DBRunTimeSave.h"
+#import "NSObject+GYFMDB.h"
 #import <objc/runtime.h>
 #import "GYFMDB.h"
 
-@implementation NSObject (DBRunTimeSave)
+@implementation NSObject (GYFMDB)
 @dynamic pk;
 
 //+(void)initialize{

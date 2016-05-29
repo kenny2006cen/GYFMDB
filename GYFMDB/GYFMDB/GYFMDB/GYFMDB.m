@@ -10,7 +10,7 @@
 
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
-#import "NSObject+DBRunTimeSave.h"
+#import "NSObject+GYFMDB.h"
 
 #import "User.h"
 #import <objc/runtime.h>

@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "GYFMDB/GYFMDB.h"
 #import "User.h"
-#import "NSObject+DBRunTimeSave.h"
+#import "NSObject+GYFMDB.h"
 
 @interface ViewController ()
 
