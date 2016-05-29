@@ -19,9 +19,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
-   // [[GYFMDB sharedInstance]createTableWithName:@"User" ColumnNameFromModel:[User new]];
-    
+   
     [User createTable];
 }
 - (IBAction)insert:(id)sender {
