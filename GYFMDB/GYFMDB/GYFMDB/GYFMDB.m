@@ -12,7 +12,6 @@
 #import "FMDatabaseQueue.h"
 #import "NSObject+GYFMDB.h"
 
-#import "User.h"
 #import <objc/runtime.h>
 
 #ifdef DEBUG
