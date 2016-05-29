@@ -32,7 +32,7 @@
 
 @interface GYFMDB(){
 
-    FMDatabase *localDB;
+//    FMDatabase *localDB;
 }
 
 //@property (strong, nonatomic) FMDatabaseQueue * dbQueue;
@@ -41,24 +41,11 @@
 
 @implementation GYFMDB
 
-/*
-- (id)initWithDBWithPath:(NSString *)dbPath {
-    self = [super init];
-    if (self) {
-        debugLog(@"dbPath = %@", dbPath);
-        if (_dbQueue) {
-           
-        }
-        _dbQueue = [FMDatabaseQueue databaseQueueWithPath:dbPath];
-    }
-    return self;
-}
-*/
 -(id)init{
     self = [super init];
     if (self) {
         
-        localDB = [FMDatabase databaseWithPath:self.dbPath];
+        _localDB = [FMDatabase databaseWithPath:self.dbPath];
         
         [self configDbQueue];
     }
@@ -124,7 +111,7 @@
     
     if (flag) {
         NSLog(@"建表成功:%@",tableName);
-        [localDB close];
+        [_localDB close];
     }
     return flag;
     

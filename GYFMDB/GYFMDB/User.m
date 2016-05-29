@@ -12,5 +12,4 @@
 @implementation User
 
 
-
 @end

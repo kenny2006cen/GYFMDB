@@ -21,6 +21,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
    // [[GYFMDB sharedInstance]createTableWithName:@"User" ColumnNameFromModel:[User new]];
+    
+    [User createTable];
 }
 - (IBAction)insert:(id)sender {
     
@@ -46,7 +48,6 @@
     
     [user deleteObject];
     
-  //  [[GYFMDB sharedInstance]deleteModel:user FromTable:@"User" ByCondition:@"userName" EqualsTo:@"jack222"];
 }
 - (IBAction)select:(id)sender {
     
@@ -54,27 +55,19 @@
     
     for ( User *user in array) {
     
-        NSLog(@"主键:%@",user.pk);
+        NSLog(@"主键:%@ 名称:%@",user.pk,user.userName);
     }
     
-//  NSArray *array = [[GYFMDB sharedInstance]queryModels:[User class] FromTable:@"User"];
-//    
-//    for ( User *user in array) {
-//        
-//        NSLog(@"user.userName =%@",user.userName);
-//    }
 }
 - (IBAction)selectByKey:(id)sender {
-    
-    NSLog(@"property Dic =%@",[User getAllProperties]);
-    
-    User *user =[[User alloc]init];
-    
-    //  user.userId=@1;
-    user.userName=@"jack888";
-    
-    [user save];
 
+  NSArray *array=[User findByCondition:@"where userName =jack33"];
+
+    for ( User *user in array) {
+        
+        NSLog(@"主键:%@ 名称:%@",user.pk,user.userName);
+    }
+    
 }
 
 - (IBAction)update:(id)sender {
@@ -83,8 +76,11 @@
     
   //  user.userId=@1;
     user.userName=@"jack333";
+    user.pk = @1;
     
-    [[GYFMDB sharedInstance]updateModel:user FromTable:@"User" ByCondition:@"userName" EqualsTo:@"jack222"];
+    [user update];
+    
+   // [[GYFMDB sharedInstance]updateModel:user FromTable:@"User" ByCondition:@"userName" EqualsTo:@"jack222"];
 }
 
 - (void)didReceiveMemoryWarning {

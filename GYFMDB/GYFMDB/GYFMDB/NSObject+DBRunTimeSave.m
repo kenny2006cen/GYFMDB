@@ -13,47 +13,12 @@
 @implementation NSObject (DBRunTimeSave)
 @dynamic pk;
 
-/*
--(NSMutableDictionary *)attributeProrertyDic{
-    unsigned int count = 0;
-  
-    Ivar *ivars = class_copyIvarList([self class], &count);
-    
-    
-    NSMutableDictionary *dic = [NSMutableDictionary dictionary];
-    for (int i = 0; i<count; i++) {
-        
-        // 取出i位置对应的成员变量
-        Ivar ivar = ivars[i];
-        
-        // 查看成员变量
-        const char *name = ivar_getName(ivar);
-       
-       const char *type = ivar_getTypeEncoding(ivar);
-                // 归档
-        NSString *key = [NSString stringWithUTF8String:name];
-        
-        NSLog(@"属性名称:%s ,属性类型名称:%s",name,type);
+//+(void)initialize{
+//
+//    [[self class] createTable];
+//}
+//
 
-        //type字段:nsinter ,long long属性,返回类型q,bool 类型返回B ，其他返回正常字符串如NSNumber,NSDate
-        id value = [self valueForKey:key];
-      
-        if ([value isKindOfClass:[NSNull class]] || value == nil) {
-          //  value = @"";
-            value = [NSString stringWithUTF8String:type];
-        }
-        NSString *realKey = [key substringFromIndex:1];
-        
-        [dic setObject:value forKey:realKey];
-    }
-    
-    free(ivars);
-    
-//    // 属性操作
-
-    return dic;
-}
-*/
 
 /**
  *  返回属性列表 数组
@@ -137,6 +102,7 @@
     
     NSMutableArray *proNames = [NSMutableArray array];
     NSMutableArray *proTypes = [NSMutableArray array];
+   
     [proNames addObject:primaryId];
     [proTypes addObject:[NSString stringWithFormat:@"%@ %@",SQLINTEGER,PrimaryKey]];
     [proNames addObjectsFromArray:[dict objectForKey:@"name"]];
@@ -154,9 +120,52 @@
 }
 
 #pragma mark - DB method
++ (BOOL)createTable
+{
+    FMDatabase *db = [GYFMDB sharedInstance].localDB;
+    
+    if (![db open]) {
+        NSLog(@"数据库打开失败!");
+        return NO;
+    }
+    
+    NSString *tableName = NSStringFromClass(self.class);
+    NSString *columeAndType = [self.class getColumeAndTypeString];
+    NSString *sql = [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@(%@);",tableName,columeAndType];
+    if (![db executeUpdate:sql]) {
+        return NO;
+    }
+    
+    NSMutableArray *columns = [NSMutableArray array];
+    FMResultSet *resultSet = [db getTableSchema:tableName];
+    while ([resultSet next]) {
+        NSString *column = [resultSet stringForColumn:@"name"];
+        [columns addObject:column];
+    }
+    NSDictionary *dict = [self.class getAllProperties];
+    NSArray *properties = [dict objectForKey:@"name"];
+    NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"NOT (SELF IN %@)",columns];
+    //过滤数组
+    NSArray *resultArray = [properties filteredArrayUsingPredicate:filterPredicate];
+    
+    for (NSString *column in resultArray) {
+        NSUInteger index = [properties indexOfObject:column];
+        NSString *proType = [[dict objectForKey:@"type"] objectAtIndex:index];
+        NSString *fieldSql = [NSString stringWithFormat:@"%@ %@",column,proType];
+        NSString *sql = [NSString stringWithFormat:@"ALTER TABLE %@ ADD COLUMN %@ ",NSStringFromClass(self.class),fieldSql];
+        if (![db executeUpdate:sql]) {
+            return NO;
+        }
+    }
+    [db close];
+    return YES;
+}
+
+
 -(BOOL)save{
     
     NSString *tableName = NSStringFromClass(self.class);
+  
     NSMutableString *keyString = [NSMutableString string];
     NSMutableString *valueString = [NSMutableString string];
     NSMutableArray *insertValues = [NSMutableArray  array];
@@ -245,7 +254,11 @@
         NSString *sql = [NSString stringWithFormat:@"UPDATE %@ SET %@ WHERE %@ = ?;", tableName, keyString, primaryId];
         [updateValues addObject:primaryValue];
       
-        res = [db executeUpdate:sql withArgumentsInArray:updateValues];
+        NSError *error;
+        
+        res = [db executeUpdate:sql values:updateValues error:&error];
+        
+     //   res = [db executeUpdate:sql withArgumentsInArray:updateValues];
         
         NSLog(res?@"更新成功":@"更新失败");
     }];
@@ -323,20 +336,79 @@
     return users;
 
 }
+/**
+ *
+ *
+ *  @param condition @"where pk =1 limit 1"
+ *
+ *  @return ModelArray
+ */
++ (NSArray *)findByCondition:(NSString *)condition{
 
+    GYFMDB *gydb = [GYFMDB sharedInstance];
+    
+    NSMutableArray *users = [NSMutableArray array];
+   
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+        
+            NSString *tableName = NSStringFromClass(self.class);
+            NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@ %@",tableName,condition];
+
+        NSDictionary *dic =[[self class]getAllProperties];
+
+        NSMutableArray* columeNames = [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"name"]];
+        NSMutableArray* columeTypes = [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"type"]];
+        
+        FMResultSet *resultSet = [db executeQuery:sql];
+        
+        while ([resultSet next]) {
+                id model = [[self.class alloc] init];
+                
+                for (int i=0; i< columeNames.count; i++) {
+                    NSString *columeName = [columeNames objectAtIndex:i];
+                    NSString *columeType = [columeTypes objectAtIndex:i];
+                    if ([columeType isEqualToString:SQLTEXT]) {
+                        [model setValue:[resultSet stringForColumn:columeName] forKey:columeName];
+                    } else {
+                        [model setValue:[NSNumber numberWithLongLong:[resultSet longLongIntForColumn:columeName]] forKey:columeName];
+                    }
+                }
+                [users addObject:model];
+                FMDBRelease(model);
+            }
+        }];
+        
+        return users;
+
+}
+
+#pragma mark - util method
++ (NSString *)getColumeAndTypeString
+{
+    NSMutableString* pars = [NSMutableString string];
+    NSDictionary *dict = [self.class getAllProperties];
+    
+    NSMutableArray *proNames = [dict objectForKey:@"name"];
+    NSMutableArray *proTypes = [dict objectForKey:@"type"];
+    
+    for (int i=0; i< proNames.count; i++) {
+        [pars appendFormat:@"%@ %@",[proNames objectAtIndex:i],[proTypes objectAtIndex:i]];
+        if(i+1 != proNames.count)
+        {
+            [pars appendString:@","];
+        }
+    }
+    return pars;
+}
 
 
 static const void * externVariableKey =&externVariableKey;
 #pragma mark - RunTime set
 -(id)pk{
-
     return objc_getAssociatedObject(self, externVariableKey);
-
 }
 -(void)setPk:(id)pk{
-
     objc_setAssociatedObject(self, externVariableKey, pk, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-
 }
 
 @end

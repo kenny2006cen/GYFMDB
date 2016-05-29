@@ -30,20 +30,25 @@
 //动态获取模型属性列表
 -(NSArray *)attributePropertyList;
 
--(NSString*)getPrimaryId;
-
--(void)setPrimaryId:(NSString*)idString;
-
 + (NSDictionary *)getAllProperties;
+
++ (BOOL)createTable;
 
 -(BOOL)save;
 
 - (BOOL)deleteObject;
 
+- (BOOL)update;
+
 + (NSArray *)findAll;
 
++ (NSArray *)findByCondition:(NSString *)condition;
+
+//为属性增加索引
++(void)addIndex:(NSString*)propertyName;
+
 /** 通过主键查询 */
-+ (instancetype)findByPK:(int)inPk;
+//+ (instancetype)findByPK:(int)inPk;
 
 -(id)pk;
 -(void)setPk:(id)pk;

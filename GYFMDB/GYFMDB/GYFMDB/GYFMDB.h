@@ -10,6 +10,7 @@
 
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
+#import "FMDatabaseAdditions.h"
 
 typedef void (^QueryFinishBlock) (FMResultSet *set);
 
@@ -25,6 +26,7 @@ typedef void (^QueryFinishBlock) (FMResultSet *set);
 @interface GYFMDB : NSObject
 
 @property (strong, nonatomic) FMDatabaseQueue * dbQueue;
+@property (strong, nonatomic) FMDatabase *localDB;
 
 -(instancetype)sharedDB;
 
