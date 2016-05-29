@@ -16,7 +16,7 @@
 
 #define PrimaryKey  @"primary key"
 
-#define primaryId     @"pk"
+#define primaryId     @"pk" //主键字段
 
 @interface NSObject (DBRunTimeSave)
 
@@ -36,7 +36,13 @@
 
 -(BOOL)save;
 
++ (BOOL)saveDBArray:(NSArray*)dataArray;
+
 - (BOOL)deleteObject;
+
++ (BOOL)deleteALLObject;
+
++ (BOOL)deleteObjectsByCondition:(NSString *)condition;
 
 - (BOOL)update;
 
@@ -44,11 +50,18 @@
 
 + (NSArray *)findByCondition:(NSString *)condition;
 
++ (id)findLastInDB;
+
 //为属性增加索引
 +(void)addIndex:(NSString*)propertyName;
 
-/** 通过主键查询 */
-//+ (instancetype)findByPK:(int)inPk;
+//表中所有数量数量
++(NSInteger)countsOfItemInDB;
+//表中某一字段求累加的和
++(NSInteger)sumOfItemInDB:(NSString*)itemName;
+
+//表中某一字段在特定条件下求累加的和
++(NSInteger)sumOfItemInDB:(NSString*)itemName ByCondition:(NSString*)condition;
 
 -(id)pk;
 -(void)setPk:(id)pk;

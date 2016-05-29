@@ -61,7 +61,7 @@
 }
 - (IBAction)selectByKey:(id)sender {
 
-  NSArray *array=[User findByCondition:@"where userName =jack33"];
+  NSArray *array=[User findByCondition:@"where userName ='jack33'"];
 
     for ( User *user in array) {
         
@@ -79,13 +79,48 @@
     user.pk = @1;
     
     [user update];
-    
-   // [[GYFMDB sharedInstance]updateModel:user FromTable:@"User" ByCondition:@"userName" EqualsTo:@"jack222"];
+ 
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+
+- (IBAction)getCounts:(id)sender {
+    
+    [User countsOfItemInDB];
+}
+
+- (IBAction)getSum:(id)sender {
+    
+//   NSInteger sum=[User sumOfItemInDB:@"pk"];
+     NSInteger sum=[User sumOfItemInDB:@"pk" ByCondition:@"where pk = 6"];
+    
+    NSLog(@"数量和：%ld",(long)sum);
+    
+}
+- (IBAction)findOne:(id)sender {
+    
+  User *model=[User findLastInDB];
+    
+    NSLog(@"model.id=%@",model.pk);
+}
+
+- (IBAction)insertArray:(id)sender {
+    
+    NSMutableArray *arr =[NSMutableArray new];
+    for (int i=0; i<100; i++) {
+        
+        User *user =[[User alloc]init];
+        
+        user.userId=@(i+20);
+       
+        [arr addObject:user];
+    }
+    
+    [User saveDBArray:arr];
+}
+
+- (IBAction)deleteArray:(id)sender {
+    
+    [User deleteALLObject];
 }
 
 @end

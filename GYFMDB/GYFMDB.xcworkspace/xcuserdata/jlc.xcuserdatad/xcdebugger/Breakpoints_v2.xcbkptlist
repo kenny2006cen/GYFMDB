@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GYFMDB/GYFMDB/NSObject+DBRunTimeSave.m"
-            timestampString = "486189762.063509"
+            timestampString = "486200882.404259"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "467"
-            endingLineNumber = "467">
+            startingLineNumber = "672"
+            endingLineNumber = "672">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -24,11 +24,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GYFMDB/GYFMDB/NSObject+DBRunTimeSave.m"
-            timestampString = "486189762.063509"
+            timestampString = "486200882.404259"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "463"
-            endingLineNumber = "463">
+            startingLineNumber = "668"
+            endingLineNumber = "668">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -38,11 +38,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GYFMDB/GYFMDB/NSObject+DBRunTimeSave.m"
-            timestampString = "486189762.063509"
+            timestampString = "486200882.404259"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "471"
-            endingLineNumber = "471">
+            startingLineNumber = "676"
+            endingLineNumber = "676">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -52,11 +52,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "GYFMDB/GYFMDB/NSObject+DBRunTimeSave.m"
-            timestampString = "486189762.063509"
+            timestampString = "486200882.404259"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "497"
-            endingLineNumber = "497">
+            startingLineNumber = "702"
+            endingLineNumber = "702">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

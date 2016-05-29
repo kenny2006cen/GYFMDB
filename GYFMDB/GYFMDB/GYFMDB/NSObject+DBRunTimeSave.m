@@ -52,6 +52,7 @@
     unsigned int outCount, i;
    
     objc_property_t *properties = class_copyPropertyList([self class], &outCount);
+  
     for (i = 0; i < outCount; i++) {
     
         objc_property_t property = properties[i];
@@ -59,6 +60,7 @@
         NSString *propertyName = [NSString stringWithCString:property_getName(property) encoding:NSUTF8StringEncoding];
     
         if ([theTransients containsObject:propertyName]) {
+            //拦截需要过滤的字段
             continue;
         }
         [proNames addObject:propertyName];
@@ -164,6 +166,7 @@
 
 -(BOOL)save{
     
+    //获取当前类名称，作为默认表名
     NSString *tableName = NSStringFromClass(self.class);
   
     NSMutableString *keyString = [NSMutableString string];
@@ -211,6 +214,59 @@
     }];
     return res;
 
+}
+
++ (BOOL)saveDBArray:(NSArray*)dataArray{
+
+     __block BOOL res = NO;
+    
+    GYFMDB *jkDB = [GYFMDB sharedInstance];
+    
+    // 事务批量插入
+    [jkDB.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        
+        for (id model in dataArray) {
+            
+            NSString *tableName = NSStringFromClass(self.class);
+            NSMutableString *keyString = [NSMutableString string];
+            NSMutableString *valueString = [NSMutableString string];
+            NSMutableArray *insertValues = [NSMutableArray  array];
+        for (int i = 0; i < [[self class]columeNames].count; i++) {
+                NSString *proname = [[[self class]columeNames] objectAtIndex:i];
+                if ([proname isEqualToString:primaryId]) {
+                    continue;
+                }
+                [keyString appendFormat:@"%@,", proname];
+                [valueString appendString:@"?,"];
+                id value = [model valueForKey:proname];
+                if (!value) {
+                    value = @"";
+                }
+                [insertValues addObject:value];
+            }
+            [keyString deleteCharactersInRange:NSMakeRange(keyString.length - 1, 1)];
+            [valueString deleteCharactersInRange:NSMakeRange(valueString.length - 1, 1)];
+            
+            NSString *sql = [NSString stringWithFormat:@"INSERT INTO %@(%@) VALUES (%@);", tableName, keyString, valueString];
+            
+            NSError *error;
+            BOOL flag =[db executeUpdate:sql values:insertValues error:&error];
+            
+         //   BOOL flag = [db executeUpdate:sql withArgumentsInArray:insertValues];
+            
+            int pk = flag?[NSNumber numberWithLongLong:db.lastInsertRowId].intValue:0;
+            
+            self.pk = [NSNumber numberWithInt:pk];
+           
+            NSLog(flag?@"批量插入成功":@"批量插入失败");
+            if (!flag) {
+                res = NO;
+                *rollback = YES;
+                return;
+            }
+        }
+    }];
+    return res;
 }
 
 - (BOOL)update
@@ -280,19 +336,47 @@
             NSLog(@"没有主键，无法删除!");
             return ;
         }
-//        NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE %@ = ?",tableName,primaryId];
+
         NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE %@ = ?",tableName,primaryId];
         NSError *error;
         
        res =[db executeUpdate:sql values:@[primaryValue] error:&error];
         
-      //  res = [db executeUpdate:sql withArgumentsInArray:@[primaryValue]];
-      
         NSLog(res?@"删除成功":@"删除失败");
     }];
     return res;
 }
 
++ (BOOL)deleteObjectsByCondition:(NSString *)condition{
+
+    return YES;
+}
+
++ (BOOL)deleteALLObject{
+
+    __block BOOL res = YES;
+    
+    GYFMDB *jkDB = [GYFMDB sharedInstance];
+    // 如果要支持事务
+    [jkDB.dbQueue inTransaction:^(FMDatabase *db, BOOL *rollback) {
+        
+        NSString *tableName = NSStringFromClass(self.class);
+        
+        NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@",tableName];
+        
+            NSError *error;
+            BOOL flag = [db executeUpdate:sql withErrorAndBindings:&error];
+        
+            NSLog(flag?@"全部删除成功":@"全部删除失败");
+            if (!flag) {
+                res = NO;
+                *rollback = YES;
+                return;
+            }
+    }];
+    return res;
+
+}
 
 +(NSArray*)findAll{
     
@@ -382,7 +466,55 @@
 
 }
 
-#pragma mark - util method
+//默认按id找到最后一条
++(id)findLastInDB{
+
+    GYFMDB *gydb = [GYFMDB sharedInstance];
+    
+    NSMutableArray *users = [NSMutableArray array];
+    
+    id user=nil;
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+        
+        NSString *tableName = NSStringFromClass(self.class);
+        NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@ order by %@ desc limit 1",tableName,primaryId];
+        
+        FMResultSet *resultSet = [db executeQuery:sql];
+        
+        while ([resultSet next]) {
+            
+            id model = [[self.class alloc] init];
+            
+            NSDictionary *dic =[[self class]getAllProperties];
+            
+            NSMutableArray* columeNames = [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"name"]];
+            NSMutableArray* columeTypes = [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"type"]];
+            
+            for (int i=0; i< columeNames.count; i++) {
+                
+                NSString *columeName = [columeNames objectAtIndex:i];
+                NSString *columeType = [columeTypes objectAtIndex:i];
+                
+                if ([columeType isEqualToString:SQLTEXT]) {
+                    
+                    [model setValue:[resultSet stringForColumn:columeName] forKey:columeName];
+                } else {
+                    
+                    [model setValue:[NSNumber numberWithLongLong:[resultSet longLongIntForColumn:columeName]] forKey:columeName];
+                }
+            }
+            [users addObject:model];
+            FMDBRelease(model);
+        }
+    }];
+    if (users.count>0) {
+        
+        user = users[0];
+    }
+    return user;
+}
+#pragma mark - method
 + (NSString *)getColumeAndTypeString
 {
     NSMutableString* pars = [NSMutableString string];
@@ -401,6 +533,79 @@
     return pars;
 }
 
++ (NSArray*)columeNames{
+
+    NSDictionary *dic =[[self class]getAllProperties];
+    
+    NSMutableArray* columeNames = [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"name"]];
+   
+    return columeNames;
+
+}
++(NSArray*)columeTypes{
+
+    NSDictionary *dic =[[self class]getAllProperties];
+    
+    NSMutableArray* columeTypes = [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"type"]];
+    return columeTypes;
+}
+
++(NSInteger)countsOfItemInDB{
+
+    NSString *tableName = NSStringFromClass(self.class);
+    
+    NSString *sql =[NSString stringWithFormat:@"SELECT count(*) FROM %@",tableName];
+    
+    GYFMDB *gydb =[GYFMDB sharedInstance];
+    
+    __block NSInteger count =0;
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+       
+       count = [db intForQuery:sql];
+
+    }];
+    
+    return count;
+}
+
++(NSInteger)sumOfItemInDB:(NSString*)itemName{
+    
+    NSString *tableName = NSStringFromClass(self.class);
+    
+    NSString *sql =[NSString stringWithFormat:@"SELECT sum(%@) FROM %@",itemName,tableName];
+    
+    GYFMDB *gydb =[GYFMDB sharedInstance];
+    
+    __block NSInteger count =0;
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+        
+        count = [db intForQuery:sql];
+        
+    }];
+
+    return count;
+}
+
++(NSInteger)sumOfItemInDB:(NSString*)itemName ByCondition:(NSString*)condition{
+
+    NSString *tableName = NSStringFromClass(self.class);
+    
+    NSString *sql =[NSString stringWithFormat:@"SELECT sum(%@) FROM %@ %@",itemName,tableName,condition];
+    
+    GYFMDB *gydb =[GYFMDB sharedInstance];
+    
+    __block NSInteger count =0;
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+        
+        count = [db intForQuery:sql];
+        
+    }];
+    
+    return count;
+}
 
 static const void * externVariableKey =&externVariableKey;
 #pragma mark - RunTime set

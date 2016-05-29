@@ -14,7 +14,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="5qZ-Lo-ELz">
-                                <rect key="frame" x="45" y="197" width="62" height="45"/>
+                                <rect key="frame" x="49" y="112" width="62" height="45"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="插入"/>
                                 <connections>
@@ -22,7 +22,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="w4F-5D-KOb">
-                                <rect key="frame" x="180" y="201" width="62" height="45"/>
+                                <rect key="frame" x="184" y="116" width="62" height="45"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="删除"/>
                                 <connections>
@@ -30,7 +30,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ONo-kh-m5f">
-                                <rect key="frame" x="57" y="261" width="62" height="45"/>
+                                <rect key="frame" x="49" y="155" width="62" height="45"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="查询"/>
                                 <connections>
@@ -38,7 +38,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="eUj-ln-olI">
-                                <rect key="frame" x="164" y="264" width="62" height="45"/>
+                                <rect key="frame" x="176" y="167" width="62" height="45"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="条件查询"/>
                                 <connections>
@@ -46,11 +46,51 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ZRA-HM-e01">
-                                <rect key="frame" x="81" y="314" width="30" height="30"/>
+                                <rect key="frame" x="77" y="214" width="30" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="更新"/>
                                 <connections>
                                     <action selector="update:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7iW-G2-cBE"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="gb6-K2-my1">
+                                <rect key="frame" x="185" y="214" width="45" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="表数量"/>
+                                <connections>
+                                    <action selector="getCounts:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ads-Co-PMT"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="IHm-XZ-yBn">
+                                <rect key="frame" x="71" y="263" width="58" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="表id求和"/>
+                                <connections>
+                                    <action selector="getSum:" destination="BYZ-38-t0r" eventType="touchUpInside" id="9le-md-qrX"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="qEm-eq-rrB">
+                                <rect key="frame" x="163" y="257" width="90" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="查询最后一条"/>
+                                <connections>
+                                    <action selector="findOne:" destination="BYZ-38-t0r" eventType="touchUpInside" id="XW9-kd-rw2"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="9kQ-uV-6sa">
+                                <rect key="frame" x="54" y="301" width="60" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="批量插入"/>
+                                <connections>
+                                    <action selector="insertArray:" destination="BYZ-38-t0r" eventType="touchUpInside" id="byV-O7-ZiU"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="dPF-Ls-emI">
+                                <rect key="frame" x="177" y="301" width="60" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="批量删除"/>
+                                <connections>
+                                    <action selector="deleteArray:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8mm-am-9YD"/>
                                 </connections>
                             </button>
                         </subviews>
