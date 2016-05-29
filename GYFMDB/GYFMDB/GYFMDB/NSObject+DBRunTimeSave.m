@@ -13,6 +13,7 @@
 @implementation NSObject (DBRunTimeSave)
 @dynamic pk;
 
+/*
 -(NSMutableDictionary *)attributeProrertyDic{
     unsigned int count = 0;
   
@@ -52,6 +53,7 @@
 
     return dic;
 }
+*/
 
 /**
  *  返回属性列表 数组
@@ -60,8 +62,8 @@
  */
 -(NSArray *)attributePropertyList{
     
-    NSDictionary *dic = [self attributeProrertyDic];
-    NSArray *array = [dic allKeys];
+    NSDictionary *dic = [[self class]getAllProperties];
+    NSArray *array = [dic objectForKey:@"name"];
     return array;
 }
 /**
@@ -151,6 +153,7 @@
     return [NSArray array];
 }
 
+#pragma mark - DB method
 -(BOOL)save{
     
     NSString *tableName = NSStringFromClass(self.class);
@@ -163,6 +166,7 @@
         NSString *proname = [self.attributePropertyList objectAtIndex:i];
         
         if ([proname isEqualToString:primaryId]) {
+            //插入时忽略主键
             continue;
         }
         [keyString appendFormat:@"%@,", proname];
@@ -200,8 +204,130 @@
 
 }
 
-static const void * externVariableKey =&externVariableKey;
+- (BOOL)update
+{
+    GYFMDB *gydb = [GYFMDB sharedInstance];
+    
+    __block BOOL res = NO;
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+     
+        NSString *tableName = NSStringFromClass(self.class);
+     
+        id primaryValue = [self valueForKey:primaryId];
+     
+        if (!primaryValue || primaryValue <= 0) {
+            NSLog(@"没有主键值，无法更新!");
+            
+            return ;
+        }
+        NSMutableString *keyString = [NSMutableString string];
+        NSMutableArray *updateValues = [NSMutableArray  array];
+       
+        for (int i = 0; i <self.attributePropertyList.count; i++) {
+          
+            NSString *proname = [self.attributePropertyList objectAtIndex:i];
+         
+            if ([proname isEqualToString:primaryId]) {
+                continue;
+            }
+            [keyString appendFormat:@" %@=?,", proname];
+            id value = [self valueForKey:proname];
+            if (!value) {
+                value = @"";
+            }
+            [updateValues addObject:value];
+        }
+        
+        //删除最后那个逗号
+        [keyString deleteCharactersInRange:NSMakeRange(keyString.length - 1, 1)];
+    
+        NSString *sql = [NSString stringWithFormat:@"UPDATE %@ SET %@ WHERE %@ = ?;", tableName, keyString, primaryId];
+        [updateValues addObject:primaryValue];
+      
+        res = [db executeUpdate:sql withArgumentsInArray:updateValues];
+        
+        NSLog(res?@"更新成功":@"更新失败");
+    }];
+    return res;
+}
 
+- (BOOL)deleteObject
+{
+    GYFMDB *gydb = [GYFMDB sharedInstance];
+    
+    __block BOOL res = NO;
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+     
+        NSString *tableName = NSStringFromClass(self.class);
+        id primaryValue = [self valueForKey:primaryId];
+      
+        if (!primaryValue || primaryValue <= 0) {
+            NSLog(@"没有主键，无法删除!");
+            return ;
+        }
+//        NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE %@ = ?",tableName,primaryId];
+        NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ WHERE %@ = ?",tableName,primaryId];
+        NSError *error;
+        
+       res =[db executeUpdate:sql values:@[primaryValue] error:&error];
+        
+      //  res = [db executeUpdate:sql withArgumentsInArray:@[primaryValue]];
+      
+        NSLog(res?@"删除成功":@"删除失败");
+    }];
+    return res;
+}
+
+
++(NSArray*)findAll{
+    
+    GYFMDB *gydb = [GYFMDB sharedInstance];
+    
+    NSMutableArray *users = [NSMutableArray array];
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+      
+        NSString *tableName = NSStringFromClass(self.class);
+        NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@",tableName];
+        FMResultSet *resultSet = [db executeQuery:sql];
+     
+        while ([resultSet next]) {
+            
+            id model = [[self.class alloc] init];
+       
+            NSDictionary *dic =[[self class]getAllProperties];
+            
+           NSMutableArray* columeNames = [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"name"]];
+            NSMutableArray* columeTypes = [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"type"]];
+            
+            for (int i=0; i< columeNames.count; i++) {
+                
+                NSString *columeName = [columeNames objectAtIndex:i];
+                NSString *columeType = [columeTypes objectAtIndex:i];
+                
+                if ([columeType isEqualToString:SQLTEXT]) {
+                   
+                    [model setValue:[resultSet stringForColumn:columeName] forKey:columeName];
+                } else {
+                  
+                    [model setValue:[NSNumber numberWithLongLong:[resultSet longLongIntForColumn:columeName]] forKey:columeName];
+                }
+            }
+            [users addObject:model];
+            FMDBRelease(model);
+        }
+    }];
+    
+    return users;
+
+}
+
+
+
+static const void * externVariableKey =&externVariableKey;
+#pragma mark - RunTime set
 -(id)pk{
 
     return objc_getAssociatedObject(self, externVariableKey);

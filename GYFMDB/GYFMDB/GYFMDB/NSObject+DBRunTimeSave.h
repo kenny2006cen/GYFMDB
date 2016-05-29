@@ -38,6 +38,13 @@
 
 -(BOOL)save;
 
+- (BOOL)deleteObject;
+
++ (NSArray *)findAll;
+
+/** 通过主键查询 */
++ (instancetype)findByPK:(int)inPk;
+
 -(id)pk;
 -(void)setPk:(id)pk;
 @end
