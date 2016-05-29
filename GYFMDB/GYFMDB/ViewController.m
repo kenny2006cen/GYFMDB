@@ -85,7 +85,10 @@
 
 - (IBAction)getCounts:(id)sender {
     
-    [User countsOfItemInDB];
+    NSInteger count= [User countsOfItemInDB];
+    
+    NSLog(@"数量：%ld",(long)count);
+
 }
 
 - (IBAction)getSum:(id)sender {
