@@ -30,12 +30,7 @@
 
 #define PATH_CACHE    [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
 
-@interface GYFMDB(){
-
-//    FMDatabase *localDB;
-}
-
-//@property (strong, nonatomic) FMDatabaseQueue * dbQueue;
+@interface GYFMDB()
 
 @end
 
@@ -79,7 +74,6 @@
 }
 
 -(BOOL)createTableWithName:(NSString *)tableName ColumnNameFromModel:(id)model{
-//IndexsForProperys:(NSArray*)array
         
     NSArray *attributes = [model attributePropertyList];
     

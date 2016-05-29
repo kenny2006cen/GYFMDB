@@ -34,6 +34,8 @@
 
 + (BOOL)createTable;
 
++ (BOOL)isExistInTable;
+
 -(BOOL)save;
 
 + (BOOL)saveDBArray:(NSArray*)dataArray;

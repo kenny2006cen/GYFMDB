@@ -163,6 +163,20 @@
     return YES;
 }
 
+/** 数据库中是否存在表 */
++ (BOOL)isExistInTable
+{
+    __block BOOL res = NO;
+    
+    GYFMDB *jkDB = [GYFMDB sharedInstance];
+    
+    [jkDB.dbQueue inDatabase:^(FMDatabase *db) {
+        
+        NSString *tableName = NSStringFromClass(self.class);
+        res = [db tableExists:tableName];
+    }];
+    return res;
+}
 
 -(BOOL)save{
     
