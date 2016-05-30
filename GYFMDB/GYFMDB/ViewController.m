@@ -49,7 +49,14 @@
 }
 - (IBAction)select:(id)sender {
     
+    User *model =[User new];
+    
+    model.select().where(@"id = 1").limit(@"1");
+    
+  //  NSArray* array =model.select();
+
   NSArray* array=[User findAll];
+    
     
     for ( User *user in array) {
     

@@ -10,6 +10,8 @@
 #import <objc/runtime.h>
 #import "GYFMDB.h"
 
+static NSMutableString *gysql;
+
 @implementation NSObject (GYFMDB)
 @dynamic pk;
 
@@ -591,6 +593,20 @@
 
     return ^(){
         //
+        
+        if (!gysql||gysql.length>0) {
+            gysql =[NSMutableString new];
+        }
+        
+        NSString *tableName = NSStringFromClass(self.class);
+        NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@",tableName];
+        
+        [gysql appendString:sql];
+        
+    //    NSArray *array =[[self class]findAll];
+        
+     //   return array;
+        
         return self;
     };
 }
@@ -599,6 +615,9 @@
     
     return ^(NSString *string){
         //
+        
+        [gysql appendFormat:@" where %@",string];
+        
         return self;
     };
 }
@@ -606,6 +625,8 @@
     
     return ^(NSString *string){
         //
+        [gysql appendFormat:@" limit %@",string];
+        
         return self;
     };
 }
@@ -614,6 +635,7 @@
     
     return ^(NSString *string){
         //
+        
         return self;
     };
 }

@@ -29,6 +29,9 @@
 @property (nonatomic,copy) NSObject*(^limit)(NSString*);
 @property (nonatomic,copy) NSObject*(^offset)(NSString*);
 @property (nonatomic,copy) NSObject*(^orderby)(NSString*);
+
+@property (nonatomic,copy) NSObject*(^runSql)(NSString*);
+
 /*链式语法*/
 
 //动态获取模型属性列表
