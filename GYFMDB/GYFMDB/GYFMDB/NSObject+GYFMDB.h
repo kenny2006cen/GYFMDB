@@ -22,10 +22,14 @@
 
 /** 主键 id */
 @property (nonatomic, strong)   NSNumber  *    pk;
-/** 列名 */
-//@property (retain, readonly, nonatomic) NSMutableArray         *columeNames;
-///** 列类型 */
-//@property (retain, readonly, nonatomic) NSMutableArray         *columeTypes;
+
+/*链式语法*/
+@property (nonatomic,copy) NSObject*(^select)();
+@property (nonatomic,copy) NSObject*(^where)(NSString*);
+@property (nonatomic,copy) NSObject*(^limit)(NSString*);
+@property (nonatomic,copy) NSObject*(^offset)(NSString*);
+@property (nonatomic,copy) NSObject*(^orderby)(NSString*);
+/*链式语法*/
 
 //动态获取模型属性列表
 -(NSArray *)attributePropertyList;
@@ -48,9 +52,19 @@
 
 - (BOOL)update;
 
+- (BOOL)updateByCondition:(NSString *)condition;
+
 + (NSArray *)findAll;
 
 + (NSArray *)findByCondition:(NSString *)condition;
+
++ (NSArray *)findOrderBy:(NSString *)condition ascending:(BOOL)flag;
+
+/*
+ Person *person = [Person MR_findFirstByAttribute:@"FirstName"
+ withValue:@"Forrest"];
+ */
++ (id)findByAttribute:(NSString *)propertyName WithValue:(NSString*)value;
 
 + (id)findLastInDB;
 

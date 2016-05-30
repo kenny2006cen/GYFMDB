@@ -528,6 +528,104 @@
     }
     return user;
 }
+
++(NSInteger)countsOfItemInDB{
+    
+    NSString *tableName = NSStringFromClass(self.class);
+    
+    NSString *sql =[NSString stringWithFormat:@"SELECT count(*) FROM %@",tableName];
+    
+    GYFMDB *gydb =[GYFMDB sharedInstance];
+    
+    __block NSInteger count =0;
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+        
+        count = [db intForQuery:sql];
+        
+    }];
+    
+    return count;
+}
+
++(NSInteger)sumOfItemInDB:(NSString*)itemName{
+    
+    NSString *tableName = NSStringFromClass(self.class);
+    
+    NSString *sql =[NSString stringWithFormat:@"SELECT sum(%@) FROM %@",itemName,tableName];
+    
+    GYFMDB *gydb =[GYFMDB sharedInstance];
+    
+    __block NSInteger count =0;
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+        
+        count = [db intForQuery:sql];
+        
+    }];
+    
+    return count;
+}
+
++(NSInteger)sumOfItemInDB:(NSString*)itemName ByCondition:(NSString*)condition{
+    
+    NSString *tableName = NSStringFromClass(self.class);
+    
+    NSString *sql =[NSString stringWithFormat:@"SELECT sum(%@) FROM %@ %@",itemName,tableName,condition];
+    
+    GYFMDB *gydb =[GYFMDB sharedInstance];
+    
+    __block NSInteger count =0;
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+        
+        count = [db intForQuery:sql];
+        
+    }];
+    
+    return count;
+}
+
+#pragma mark - Block method
+- (NSObject*(^)())select{
+
+    return ^(){
+        //
+        return self;
+    };
+}
+
+- (NSObject*(^)(NSString*))where{
+    
+    return ^(NSString *string){
+        //
+        return self;
+    };
+}
+- (NSObject*(^)(NSString*))limit{
+    
+    return ^(NSString *string){
+        //
+        return self;
+    };
+}
+
+- (NSObject*(^)(NSString*))offset{
+    
+    return ^(NSString *string){
+        //
+        return self;
+    };
+}
+
+- (NSObject*(^)(NSString*))orderby{
+    
+    return ^(NSString *string){
+        //
+        return self;
+    };
+}
+
 #pragma mark - method
 + (NSString *)getColumeAndTypeString
 {
@@ -564,62 +662,6 @@
     return columeTypes;
 }
 
-+(NSInteger)countsOfItemInDB{
-
-    NSString *tableName = NSStringFromClass(self.class);
-    
-    NSString *sql =[NSString stringWithFormat:@"SELECT count(*) FROM %@",tableName];
-    
-    GYFMDB *gydb =[GYFMDB sharedInstance];
-    
-    __block NSInteger count =0;
-    
-    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
-       
-       count = [db intForQuery:sql];
-
-    }];
-    
-    return count;
-}
-
-+(NSInteger)sumOfItemInDB:(NSString*)itemName{
-    
-    NSString *tableName = NSStringFromClass(self.class);
-    
-    NSString *sql =[NSString stringWithFormat:@"SELECT sum(%@) FROM %@",itemName,tableName];
-    
-    GYFMDB *gydb =[GYFMDB sharedInstance];
-    
-    __block NSInteger count =0;
-    
-    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
-        
-        count = [db intForQuery:sql];
-        
-    }];
-
-    return count;
-}
-
-+(NSInteger)sumOfItemInDB:(NSString*)itemName ByCondition:(NSString*)condition{
-
-    NSString *tableName = NSStringFromClass(self.class);
-    
-    NSString *sql =[NSString stringWithFormat:@"SELECT sum(%@) FROM %@ %@",itemName,tableName,condition];
-    
-    GYFMDB *gydb =[GYFMDB sharedInstance];
-    
-    __block NSInteger count =0;
-    
-    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
-        
-        count = [db intForQuery:sql];
-        
-    }];
-    
-    return count;
-}
 
 static const void * externVariableKey =&externVariableKey;
 #pragma mark - RunTime set
