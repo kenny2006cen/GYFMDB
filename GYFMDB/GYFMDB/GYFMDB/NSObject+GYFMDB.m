@@ -647,6 +647,47 @@ static NSMutableString *gysql;
         return self;
     };
 }
+-(NSMutableArray*(^)())runSql{
+
+    return ^(){
+        
+        GYFMDB *gydb = [GYFMDB sharedInstance];
+        
+        __block   NSMutableArray *users = [NSMutableArray array];
+        
+        [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+            
+            NSString *sql = [NSString stringWithFormat:@"%@",gysql];
+            
+            NSDictionary *dic =[[self class]getAllProperties];
+            
+            NSMutableArray* columeNames = [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"name"]];
+            NSMutableArray* columeTypes = [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"type"]];
+            
+            FMResultSet *resultSet = [db executeQuery:sql];
+            
+            while ([resultSet next]) {
+                id model = [[self.class alloc] init];
+                
+                for (int i=0; i< columeNames.count; i++) {
+               
+                    NSString *columeName = [columeNames objectAtIndex:i];
+                    NSString *columeType = [columeTypes objectAtIndex:i];
+                  
+                    if ([columeType isEqualToString:SQLTEXT]) {
+                        [model setValue:[resultSet stringForColumn:columeName] forKey:columeName];
+                    } else {
+                        [model setValue:[NSNumber numberWithLongLong:[resultSet longLongIntForColumn:columeName]] forKey:columeName];
+                    }
+                }
+                [users addObject:model];
+                FMDBRelease(model);
+            }
+        }];
+
+        return users;
+    };
+}
 
 #pragma mark - method
 + (NSString *)getColumeAndTypeString

@@ -52,13 +52,15 @@
     
     User *model =[User new];
     
-    model.select().where(@"id = 1").limit(@"1");
+   NSArray *array =model.select().where(@"pk = 2").runSql();
     
+  //  NSArray *array =model.select().limit(@"2").runSql();
+
   //  NSArray* array =model.select();
 
-  NSArray* array=[User findAll];
-    
-    
+//  NSArray* array=[User findAll];
+//    
+//    
     for ( User *user in array) {
     
         NSLog(@"主键:%@ 名称:%@",user.pk,user.userName);

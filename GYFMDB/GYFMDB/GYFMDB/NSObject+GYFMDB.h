@@ -30,7 +30,7 @@
 @property (nonatomic,copy) NSObject*(^offset)(NSString*);
 @property (nonatomic,copy) NSObject*(^orderby)(NSString*);
 
-@property (nonatomic,copy) NSObject*(^runSql)(NSString*);
+@property (nonatomic,copy) NSMutableArray*(^runSql)();
 
 /*链式语法*/
 
