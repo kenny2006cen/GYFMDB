@@ -43,6 +43,7 @@
    //  user.userId=@1;
   //   user.userName=@"jack222";
     user.pk = @2;
+   
     
     [user deleteObject];
     
@@ -101,13 +102,15 @@
     
   User *model=[User findLastInDB];
     
+    model.select().where(@"").orderby(@"").limit(@"");
+    
     NSLog(@"model.id=%@",model.pk);
 }
 
 - (IBAction)insertArray:(id)sender {
     
     NSMutableArray *arr =[NSMutableArray new];
-    for (int i=0; i<100; i++) {
+    for (int i=0; i<1000; i++) {
         
         User *user =[[User alloc]init];
         
