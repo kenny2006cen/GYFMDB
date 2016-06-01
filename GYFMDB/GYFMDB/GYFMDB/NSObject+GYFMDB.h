@@ -29,6 +29,8 @@
 @property (nonatomic,copy) NSObject*(^limit)(NSString*);
 @property (nonatomic,copy) NSObject*(^offset)(NSString*);
 @property (nonatomic,copy) NSObject*(^orderby)(NSString*);
+@property (nonatomic,copy) NSObject*(^groupby)(NSString*);
+@property (nonatomic,copy) NSObject*(^having)(NSString*);
 
 @property (nonatomic,copy) NSMutableArray*(^runSql)();
 

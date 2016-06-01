@@ -635,7 +635,8 @@ static NSMutableString *gysql;
     
     return ^(NSString *string){
         //
-        
+        [gysql appendFormat:@" limit %@",string];
+
         return self;
     };
 }
@@ -644,9 +645,31 @@ static NSMutableString *gysql;
     
     return ^(NSString *string){
         //
+        [gysql appendFormat:@" orderby %@",string];
+
         return self;
     };
 }
+- (NSObject*(^)(NSString*))groupby{
+    
+    return ^(NSString *string){
+        //
+        [gysql appendFormat:@" group %@",string];
+
+        return self;
+    };
+}
+
+- (NSObject*(^)(NSString*))having{
+    
+    return ^(NSString *string){
+        //
+        [gysql appendFormat:@" having %@",string];
+        
+        return self;
+    };
+}
+
 -(NSMutableArray*(^)())runSql{
 
     return ^(){

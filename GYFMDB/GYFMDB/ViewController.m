@@ -52,8 +52,9 @@
     
     User *model =[User new];
     
-   NSArray *array =model.select().where(@"pk = 2").runSql();
-    
+//   NSArray *array =model.select().where(@"pk = 2").runSql();
+    NSArray *array =model.select().runSql();
+
   //  NSArray *array =model.select().limit(@"2").runSql();
 
   //  NSArray* array =model.select();
