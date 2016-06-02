@@ -115,7 +115,7 @@ static NSMutableString *gysql;
     return [NSDictionary dictionaryWithObjectsAndKeys:proNames,@"name",proTypes,@"type",nil];
 }
 
-#pragma mark - un used column过滤字段
+#pragma mark - otherMethod
 /** 如果子类中有一些property不需要创建数据库字段，那么这个方法必须在子类中重写
  */
 + (NSArray *)transients
@@ -125,13 +125,18 @@ static NSMutableString *gysql;
 
 +(NSString*)aliasName{
 
-    
     NSString *tableName = NSStringFromClass(self.class);
     
     NSString *aliasName = tableName.lowercaseString;
     
-    //统一小写做别名
+    //统一小写全部字符做别名
     return aliasName;
+}
+// 增加数据映射字典
+-(NSDictionary*)mapDic{
+
+    return [NSDictionary new];
+    
 }
 
 #pragma mark - DB method
@@ -153,12 +158,15 @@ static NSMutableString *gysql;
     
     NSMutableArray *columns = [NSMutableArray array];
     FMResultSet *resultSet = [db getTableSchema:tableName];
+ 
     while ([resultSet next]) {
         NSString *column = [resultSet stringForColumn:@"name"];
         [columns addObject:column];
     }
     NSDictionary *dict = [self.class getAllProperties];
+  
     NSArray *properties = [dict objectForKey:@"name"];
+ 
     NSPredicate *filterPredicate = [NSPredicate predicateWithFormat:@"NOT (SELF IN %@)",columns];
     //过滤数组
     NSArray *resultArray = [properties filteredArrayUsingPredicate:filterPredicate];
