@@ -34,14 +34,16 @@
 @property (nonatomic,copy) NSObject*(^groupby)(NSString*);
 @property (nonatomic,copy) NSObject*(^having)(NSString*);
 
-@property (nonatomic,copy) NSObject*(^join)(NSString*);
+//@property (nonatomic,copy) NSObject*(^join)(NSString*);
 
 @property (nonatomic,copy) NSObject*(^joinWithOn)(NSString*,NSString*);
 
-@property (nonatomic,copy) NSObject*(^on)(NSString*);
+//@property (nonatomic,copy) NSObject*(^on)(NSString*);
 
 
-@property (nonatomic,copy) NSMutableArray*(^runSql)();
+@property (nonatomic,copy) NSMutableArray*(^runSql)();//默认返回数组
+
+@property (nonatomic,copy) NSObject*(^findSql)();//默认返回一个对象
 
 /*链式语法*/
 

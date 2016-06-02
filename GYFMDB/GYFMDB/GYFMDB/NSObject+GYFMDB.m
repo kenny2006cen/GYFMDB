@@ -115,7 +115,7 @@ static NSMutableString *gysql;
     return [NSDictionary dictionaryWithObjectsAndKeys:proNames,@"name",proTypes,@"type",nil];
 }
 
-#pragma mark - 过滤字段
+#pragma mark - un used column过滤字段
 /** 如果子类中有一些property不需要创建数据库字段，那么这个方法必须在子类中重写
  */
 + (NSArray *)transients
@@ -744,6 +744,7 @@ static NSMutableString *gysql;
     };
 }
 
+/*
 - (NSObject*(^)(NSString*))on{
     
     return ^(NSString *string){
@@ -753,7 +754,7 @@ static NSMutableString *gysql;
         return self;
     };
 }
-
+*/
 -(NSMutableArray*(^)())runSql{
 
     return ^(){
