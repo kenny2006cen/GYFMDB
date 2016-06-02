@@ -16,7 +16,7 @@
 		185115891CF7D98A00B5BA69 /* GYFMDB.m in Sources */ = {isa = PBXBuildFile; fileRef = 185115881CF7D98A00B5BA69 /* GYFMDB.m */; };
 		18BF51E91CF93D000027156D /* NSObject+GYFMDB.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF51E81CF93D000027156D /* NSObject+GYFMDB.m */; };
 		18BF51EC1CF941970027156D /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF51EB1CF941970027156D /* User.m */; };
-		18BF51EF1CF950AB0027156D /* Detail.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF51EE1CF950AB0027156D /* Detail.m */; };
+		18BF51EF1CF950AB0027156D /* UserType.m in Sources */ = {isa = PBXBuildFile; fileRef = 18BF51EE1CF950AB0027156D /* UserType.m */; };
 		E1E2F8D0F366B86B8C9F903D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 16A59F187F3BDEB197680E75 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -38,8 +38,8 @@
 		18BF51E81CF93D000027156D /* NSObject+GYFMDB.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+GYFMDB.m"; sourceTree = "<group>"; };
 		18BF51EA1CF941970027156D /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		18BF51EB1CF941970027156D /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
-		18BF51ED1CF950AB0027156D /* Detail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Detail.h; sourceTree = "<group>"; };
-		18BF51EE1CF950AB0027156D /* Detail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Detail.m; sourceTree = "<group>"; };
+		18BF51ED1CF950AB0027156D /* UserType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserType.h; sourceTree = "<group>"; };
+		18BF51EE1CF950AB0027156D /* UserType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserType.m; sourceTree = "<group>"; };
 		819A38AEA5396FD77549D30C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		EEBD32D587B67AE8478ECEDD /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -84,8 +84,8 @@
 				185115761CF7D93C00B5BA69 /* ViewController.m */,
 				18BF51EA1CF941970027156D /* User.h */,
 				18BF51EB1CF941970027156D /* User.m */,
-				18BF51ED1CF950AB0027156D /* Detail.h */,
-				18BF51EE1CF950AB0027156D /* Detail.m */,
+				18BF51ED1CF950AB0027156D /* UserType.h */,
+				18BF51EE1CF950AB0027156D /* UserType.m */,
 				185115781CF7D93C00B5BA69 /* Main.storyboard */,
 				1851157B1CF7D93C00B5BA69 /* Assets.xcassets */,
 				1851157D1CF7D93C00B5BA69 /* LaunchScreen.storyboard */,
@@ -253,7 +253,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				185115891CF7D98A00B5BA69 /* GYFMDB.m in Sources */,
-				18BF51EF1CF950AB0027156D /* Detail.m in Sources */,
+				18BF51EF1CF950AB0027156D /* UserType.m in Sources */,
 				18BF51E91CF93D000027156D /* NSObject+GYFMDB.m in Sources */,
 				18BF51EC1CF941970027156D /* User.m in Sources */,
 				185115771CF7D93C00B5BA69 /* ViewController.m in Sources */,

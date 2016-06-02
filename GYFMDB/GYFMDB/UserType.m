@@ -6,8 +6,8 @@
 //  Copyright © 2016年 jlc. All rights reserved.
 //
 
-#import "Detail.h"
+#import "UserType.h"
 
-@implementation Detail
+@implementation UserType
 
 @end

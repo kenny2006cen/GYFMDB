@@ -8,6 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Detail : NSObject
+@interface UserType : NSObject
+
+@property(nonatomic)NSInteger userType;
+@property(nonatomic,strong) NSNumber *userId;
 
 @end

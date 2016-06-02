@@ -9,6 +9,8 @@
 #import "ViewController.h"
 #import "GYFMDB/GYFMDB.h"
 #import "User.h"
+#import "UserType.h"
+
 #import "NSObject+GYFMDB.h"
 
 @interface ViewController ()
@@ -21,6 +23,23 @@
     [super viewDidLoad];
    
     [User createTable];
+    
+    [UserType createTable];
+    
+    
+    //增加关联表
+//    NSMutableArray *typeArray =[NSMutableArray new];
+//    for (int i=0; i<3; i++) {
+//        
+//        UserType *type =[UserType new];
+//        
+//        type.userType=i;
+//        type.userId = @(i);
+//        
+//        [typeArray addObject:type];
+//    }
+//    
+//    [UserType saveDBArray:typeArray];
 }
 - (IBAction)insert:(id)sender {
     
@@ -52,9 +71,15 @@
     
     User *model =[User new];
     
+    
+   // UserType *typeModel =[UserType new];
+    
+    //第二个参数，写on条件,默认左连接,左表连接字段在前
+//    NSArray *array= model.select().joinWithOn(@"UserType",@"user.userId=usertype.userId").runSql();
+  NSArray *array= model.select().joinWithOn(@"UserType",@"userId=userId").runSql();
+ //   NSArray *array =model.select().runSql();
+    
 //   NSArray *array =model.select().where(@"pk = 2").runSql();
-    NSArray *array =model.select().runSql();
-
   //  NSArray *array =model.select().limit(@"2").runSql();
 
   //  NSArray* array =model.select();
@@ -120,7 +145,7 @@
 - (IBAction)insertArray:(id)sender {
     
     NSMutableArray *arr =[NSMutableArray new];
-    for (int i=0; i<1000; i++) {
+    for (int i=0; i<100; i++) {
         
         User *user =[[User alloc]init];
         

@@ -115,12 +115,23 @@ static NSMutableString *gysql;
     return [NSDictionary dictionaryWithObjectsAndKeys:proNames,@"name",proTypes,@"type",nil];
 }
 
-#pragma mark - must be override method
+#pragma mark - 过滤字段
 /** 如果子类中有一些property不需要创建数据库字段，那么这个方法必须在子类中重写
  */
 + (NSArray *)transients
 {
-    return [NSArray array];
+    return [NSArray arrayWithObject:@"aliasName"];
+}
+
++(NSString*)aliasName{
+
+    
+    NSString *tableName = NSStringFromClass(self.class);
+    
+    NSString *aliasName = tableName.lowercaseString;
+    
+    //统一小写做别名
+    return aliasName;
 }
 
 #pragma mark - DB method
@@ -599,7 +610,13 @@ static NSMutableString *gysql;
         }
         
         NSString *tableName = NSStringFromClass(self.class);
-        NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@",tableName];
+        
+        //表的别名
+     NSString*aliasName= [[self class]aliasName];
+   // const char *  str= class_getName(self);
+        
+        //NSString * aliasName =
+        NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@ %@ ",tableName,aliasName];
         
         [gysql appendString:sql];
         
@@ -665,6 +682,73 @@ static NSMutableString *gysql;
     return ^(NSString *string){
         //
         [gysql appendFormat:@" having %@",string];
+        
+        return self;
+    };
+}
+/*
+- (NSObject*(^)(NSString*))join{
+    
+    return ^(NSString *string){
+        //
+      //  NSString *string =NSStringFromClass(class.class);
+        
+        Class joinClass = NSClassFromString(string);
+        
+        //默认小写返回别名
+        NSString *joinClassAliasName = [joinClass aliasName];
+        
+        [gysql appendFormat:@"join %@ %@",string,joinClassAliasName];
+        
+        return self;
+    };
+}
+*/
+//暂时做2表连接
+- (NSObject*(^)(NSString*,NSString*))joinWithOn{
+    
+    return ^(NSString *string,NSString*condition){
+        //
+        //  NSString *string =NSStringFromClass(class.class);
+        
+        //连接的表名转换为类,调用类的别名生产方法
+        Class joinClass = NSClassFromString(string);
+        
+        //默认小写返回别名
+        NSString *joinClassAliasName = [joinClass aliasName];
+        
+        NSString *currentClassAliasName = [[self class]aliasName];
+        
+        NSArray *conditionArray =[condition componentsSeparatedByString:@"="];
+        
+        if (conditionArray.count<=0) {
+            
+            NSLog(@"表达式条件错误");
+            //表达式错误
+            return self;
+        }
+        
+        if (conditionArray.count>2) {
+             NSLog(@"暂不支持2张以上的表连接!");
+            return self;
+        }
+        
+        NSString *leftColumnName = conditionArray[0];
+        NSString *rightColumnName = conditionArray[1];
+        
+         NSString *completeOnCondition = [NSString stringWithFormat:@"%@.%@=%@.%@",currentClassAliasName,leftColumnName,joinClassAliasName,rightColumnName];
+        
+        [gysql appendFormat:@"join %@ %@ on %@",string,joinClassAliasName,completeOnCondition];
+        
+        return self;
+    };
+}
+
+- (NSObject*(^)(NSString*))on{
+    
+    return ^(NSString *string){
+        //
+        [gysql appendFormat:@" on %@",string];
         
         return self;
     };

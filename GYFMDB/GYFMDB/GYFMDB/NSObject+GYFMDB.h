@@ -22,6 +22,7 @@
 
 /** 主键 id */
 @property (nonatomic, strong)   NSNumber  *    pk;
+//@property (nonatomic, strong)   NSString  *    aliasName;//别名
 
 /*链式语法*/
 @property (nonatomic,copy) NSObject*(^select)();
@@ -29,8 +30,16 @@
 @property (nonatomic,copy) NSObject*(^limit)(NSString*);
 @property (nonatomic,copy) NSObject*(^offset)(NSString*);
 @property (nonatomic,copy) NSObject*(^orderby)(NSString*);
+
 @property (nonatomic,copy) NSObject*(^groupby)(NSString*);
 @property (nonatomic,copy) NSObject*(^having)(NSString*);
+
+@property (nonatomic,copy) NSObject*(^join)(NSString*);
+
+@property (nonatomic,copy) NSObject*(^joinWithOn)(NSString*,NSString*);
+
+@property (nonatomic,copy) NSObject*(^on)(NSString*);
+
 
 @property (nonatomic,copy) NSMutableArray*(^runSql)();
 

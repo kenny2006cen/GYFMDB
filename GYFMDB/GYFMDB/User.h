@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Detail.h"
+#import "UserType.h"
 
 @interface User : NSObject
 
