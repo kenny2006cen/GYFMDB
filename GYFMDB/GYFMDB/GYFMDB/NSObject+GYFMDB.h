@@ -34,11 +34,8 @@
 @property (nonatomic,copy) NSObject*(^groupby)(NSString*);
 @property (nonatomic,copy) NSObject*(^having)(NSString*);
 
-//@property (nonatomic,copy) NSObject*(^join)(NSString*);
 
 @property (nonatomic,copy) NSObject*(^joinWithOn)(NSString*,NSString*);
-
-//@property (nonatomic,copy) NSObject*(^on)(NSString*);
 
 
 @property (nonatomic,copy) NSMutableArray*(^runSql)();//默认返回数组
@@ -46,7 +43,7 @@
 @property (nonatomic,copy) NSObject*(^findSql)();//默认返回一个对象
 
 /*链式语法*/
-
+#pragma mark - ORM Method
 //动态获取模型属性列表
 -(NSArray *)attributePropertyList;
 
@@ -70,6 +67,7 @@
 
 - (BOOL)updateByCondition:(NSString *)condition;
 
+#pragma mark- 仿MagicalRecord
 + (NSArray *)findAll;
 
 + (NSArray *)findByCondition:(NSString *)condition;
@@ -84,8 +82,6 @@
 
 + (id)findLastInDB;
 
-//为属性增加索引
-+(void)addIndex:(NSString*)propertyName;
 
 //表中所有数量数量
 +(NSInteger)countsOfItemInDB;
@@ -95,6 +91,7 @@
 //表中某一字段在特定条件下求累加的和
 +(NSInteger)sumOfItemInDB:(NSString*)itemName ByCondition:(NSString*)condition;
 
+#pragma mark - PrimaryKey method
 -(id)pk;
 -(void)setPk:(id)pk;
 @end
