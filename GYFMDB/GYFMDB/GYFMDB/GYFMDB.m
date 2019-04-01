@@ -29,6 +29,7 @@
 
 #define PATH_CACHE    [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
 
+
 @interface GYFMDB()
 
 @end
@@ -42,6 +43,8 @@
         _localDB = [FMDatabase databaseWithPath:self.dbPath];
         
         [self configDbQueue];
+        
+        
     }
     return self;
 }
@@ -62,6 +65,12 @@
     });
     return _singleton;
 }
+
+-(void)createTables{
+
+
+}
+
 
 -(NSString*)dbPath{
 
@@ -153,7 +162,7 @@
        flag  = [db executeUpdate:mutSql withErrorAndBindings:&error];
         
         if (flag) {
-            NSLog(@"插入成功");
+            SZLog(@"插入成功");
             
           //  [self.dbQueue close];
         }
@@ -176,7 +185,7 @@
        flag = [db executeQuery:deleteSql values:@[] error:&error];
         
         if (flag) {
-            NSLog(@"删除成功");
+            SZLog(@"删除成功");
         }
     }];
     return flag;

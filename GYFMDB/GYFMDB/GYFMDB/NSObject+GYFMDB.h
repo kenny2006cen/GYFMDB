@@ -21,14 +21,14 @@
 @interface NSObject (GYFMDB)
 
 /** 主键 id */
-@property (nonatomic, strong)   NSNumber  *    pk;
+@property (nonatomic, strong)   NSNumber  *pk;
 //@property (nonatomic, strong)   NSString  *    aliasName;//别名
 
 /*链式语法*/
-@property (nonatomic,copy) NSObject*(^select)();
+@property (nonatomic,copy) NSObject*(^select)(void);
 @property (nonatomic,copy) NSObject*(^where)(NSString*);
 @property (nonatomic,copy) NSObject*(^limit)(NSString*);
-@property (nonatomic,copy) NSObject*(^offset)(NSString*);
+@property (nonatomic,copy) NSObject*(^gy_offset)(NSString*);
 @property (nonatomic,copy) NSObject*(^orderby)(NSString*);
 
 @property (nonatomic,copy) NSObject*(^groupby)(NSString*);
@@ -38,9 +38,9 @@
 @property (nonatomic,copy) NSObject*(^joinWithOn)(NSString*,NSString*);
 
 
-@property (nonatomic,copy) NSMutableArray*(^runSql)();//默认返回数组
+@property (nonatomic,copy) NSMutableArray*(^runSql)(void);//默认返回数组
 
-@property (nonatomic,copy) NSObject*(^findSql)();//默认返回一个对象
+@property (nonatomic,copy) NSObject*(^findSql)(void);//默认返回一个对象
 
 /*链式语法*/
 #pragma mark - ORM Method
@@ -49,7 +49,12 @@
 
 + (NSDictionary *)getAllProperties;
 
+//以当前类名创建名
 + (BOOL)createTable;
+
+//创建具有惟一索引的当前类名表
++(BOOL)createTableWithUniqueIndex:(NSString*)uniqueName;
+
 
 + (BOOL)isExistInTable;
 
@@ -65,10 +70,17 @@
 
 - (BOOL)update;
 
+-(BOOL)update1:(NSString *)sql;
+
 - (BOOL)updateByCondition:(NSString *)condition;
 
 #pragma mark- 仿MagicalRecord
+//升序排列所有数据
 + (NSArray *)findAll;
+//降序排列所有数据
++(NSArray*)findAllDescByPrimaryKey;
+
++(NSArray*)findBySql:(NSString*)sql;
 
 + (NSArray *)findByCondition:(NSString *)condition;
 

@@ -38,22 +38,6 @@ typedef void (^QueryFinishBlock) (FMResultSet *set);
 
 - (BOOL)clearTable:(NSString *)tableName;
 
-/*** 以下为用keyValue形式存储数据库方法****/
-
-- (BOOL)saveObject:(id)object withKey:(NSString *)objectKey intoTable:(NSString *)tableName;
-
-- (id)getObjectByKey:(NSString *)objectKey fromTable:(NSString *)tableName;
-
-- (GYKeyValueItem *)getKeyValueItemByKey:(NSString *)objectKey fromTable:(NSString *)tableName;
-
-- (NSArray *)getAllKeyValueItemsFromTable:(NSString *)tableName;
-
-- (NSUInteger)getCountFromTable:(NSString *)tableName;
-
-- (BOOL)deleteObjectByKey:(NSString *)objectKey fromTable:(NSString *)tableName;
-
-- (BOOL)deleteObjectsByKeyArray:(NSArray *)objectKeyArray fromTable:(NSString *)tableName;
-
 /***********************************/
 + (instancetype)sharedInstance;
 
@@ -69,5 +53,10 @@ typedef void (^QueryFinishBlock) (FMResultSet *set);
 -(BOOL)updateModel:(id)model FromTable:(NSString*)tableName ByCondition:(NSString*)propertyName EqualsTo:(NSString*)value;
 
 -(NSArray*)queryModels:(Class)modelClass FromTable:(NSString*)tableName;
+
+
+//创建搜索历史表
++(BOOL)createSearchListTableview;
+
 
 @end

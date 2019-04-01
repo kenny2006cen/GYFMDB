@@ -139,53 +139,76 @@ static NSMutableString *gysql;
 }
 
 #pragma mark - DB method
-+ (BOOL)createTable {
-  FMDatabase *db = [GYFMDB sharedInstance].localDB;
 
-  if (![db open]) {
-    NSLog(@"数据库打开失败!");
-    return NO;
-  }
++(BOOL)createTableWithUniqueIndex:(NSString*)uniqueName{
 
-  NSString *tableName = NSStringFromClass(self.class);
-  NSString *columeAndType = [self.class getColumeAndTypeString];
-  NSString *sql =
-      [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@(%@);",
-                                 tableName, columeAndType];
-  if (![db executeUpdate:sql]) {
-    return NO;
-  }
 
-  NSMutableArray *columns = [NSMutableArray array];
-  FMResultSet *resultSet = [db getTableSchema:tableName];
-
-  while ([resultSet next]) {
-    NSString *column = [resultSet stringForColumn:@"name"];
-    [columns addObject:column];
-  }
-  NSDictionary *dict = [self.class getAllProperties];
-
-  NSArray *properties = [dict objectForKey:@"name"];
-
-  NSPredicate *filterPredicate =
-      [NSPredicate predicateWithFormat:@"NOT (SELF IN %@)", columns];
-  //过滤数组
-  NSArray *resultArray =
-      [properties filteredArrayUsingPredicate:filterPredicate];
-
-  for (NSString *column in resultArray) {
-    NSUInteger index = [properties indexOfObject:column];
-    NSString *proType = [[dict objectForKey:@"type"] objectAtIndex:index];
-    NSString *fieldSql = [NSString stringWithFormat:@"%@ %@", column, proType];
-    NSString *sql =
-        [NSString stringWithFormat:@"ALTER TABLE %@ ADD COLUMN %@ ",
-                                   NSStringFromClass(self.class), fieldSql];
-    if (![db executeUpdate:sql]) {
-      return NO;
+    FMDatabase *db = [GYFMDB sharedInstance].localDB;
+    
+    if (![db open]) {
+        NSLog(@"数据库打开失败!");
+        return NO;
     }
-  }
-  [db close];
-  return YES;
+    
+    NSString *tableName = NSStringFromClass(self.class);
+    NSString *columeAndType = [self.class getColumeAndTypeString];
+    NSString *sql =
+   
+    [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@(%@);",
+     tableName, columeAndType];
+    
+    if (uniqueName) {
+        
+        sql =
+        
+        [NSString stringWithFormat:@"CREATE TABLE IF NOT EXISTS %@(%@ ,UNIQUE(%@));",
+         tableName, columeAndType,uniqueName];
+        
+    }
+    
+    
+    if (![db executeUpdate:sql]) {
+        return NO;
+    }
+    
+    NSMutableArray *columns = [NSMutableArray array];
+    FMResultSet *resultSet = [db getTableSchema:tableName];
+    
+    while ([resultSet next]) {
+        NSString *column = [resultSet stringForColumn:@"name"];
+        [columns addObject:column];
+    }
+    NSDictionary *dict = [self.class getAllProperties];
+    
+    NSArray *properties = [dict objectForKey:@"name"];
+    
+    NSPredicate *filterPredicate =
+    [NSPredicate predicateWithFormat:@"NOT (SELF IN %@)", columns];
+    //过滤数组
+    NSArray *resultArray =
+    [properties filteredArrayUsingPredicate:filterPredicate];
+    
+    for (NSString *column in resultArray) {
+        NSUInteger index = [properties indexOfObject:column];
+        NSString *proType = [[dict objectForKey:@"type"] objectAtIndex:index];
+        NSString *fieldSql = [NSString stringWithFormat:@"%@ %@", column, proType];
+        NSString *sql =
+        [NSString stringWithFormat:@"ALTER TABLE %@ ADD COLUMN %@ ",
+         NSStringFromClass(self.class), fieldSql];
+        if (![db executeUpdate:sql]) {
+            return NO;
+        }
+    }
+    [db close];
+    return YES;
+
+}
+
++ (BOOL)createTable {
+    
+ return   [self createTableWithUniqueIndex:nil];
+
+    
 }
 
 /** 数据库中是否存在表 */
@@ -237,10 +260,12 @@ static NSMutableString *gysql;
 
   [jkDB.dbQueue inDatabase:^(FMDatabase *db) {
 
-    NSString *sql =
-        [NSString stringWithFormat:@"INSERT INTO %@(%@) VALUES (%@);",
-                                   tableName, keyString, valueString];
-
+//    NSString *sql =
+//        [NSString stringWithFormat:@"INSERT INTO %@(%@) VALUES (%@);",
+//                                   tableName, keyString, valueString];
+      NSString *sql =
+      [NSString stringWithFormat:@"INSERT OR REPLACE INTO %@(%@) VALUES (%@);",
+       tableName, keyString, valueString];
     res = [db executeUpdate:sql withArgumentsInArray:insertValues];
 
     int pk = res ? [NSNumber numberWithLongLong:db.lastInsertRowId].intValue
@@ -251,7 +276,7 @@ static NSMutableString *gysql;
     // self.pk = res?[NSNumber
     // numberWithLongLong:db.lastInsertRowId].intValue:0;//添加之后返回添加的实体的自增ID,db.lastInsertRowId
 
-    NSLog(res ? @"插入成功" : @"插入失败");
+    SZLog(res ? @"插入成功" : @"插入失败");
   }];
   return res;
 }
@@ -300,7 +325,7 @@ static NSMutableString *gysql;
 
       self.pk = [NSNumber numberWithInt:pk];
 
-      NSLog(flag ? @"批量插入成功" : @"批量插入失败");
+      SZLog(flag ? @"批量插入成功" : @"批量插入失败");
       if (!flag) {
         res = NO;
         *rollback = YES;
@@ -363,6 +388,20 @@ static NSMutableString *gysql;
   return res;
 }
 
+-(BOOL)update1:(NSString *)sql{
+    GYFMDB *gydb = [GYFMDB sharedInstance];
+    
+    __block BOOL res = NO;
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+            
+        res = [db executeUpdate:sql];
+        
+        NSLog(res ? @"更新成功" : @"更新失败");
+    }];
+    return res;
+}
+
 - (BOOL)deleteObject {
   GYFMDB *gydb = [GYFMDB sharedInstance];
 
@@ -384,13 +423,28 @@ static NSMutableString *gysql;
 
     res = [db executeUpdate:sql values:@[ primaryValue ] error:&error];
 
-    NSLog(res ? @"删除成功" : @"删除失败");
+     SZLog(res ? @"删除成功" : @"删除失败");
   }];
   return res;
 }
 
 + (BOOL)deleteObjectsByCondition:(NSString *)condition {
-  return YES;
+    __block BOOL res = NO;
+     GYFMDB *jkDB = [GYFMDB sharedInstance];
+    [jkDB.dbQueue inDatabase:^(FMDatabase *db) {
+        NSString *tableName = NSStringFromClass(self.class);
+        
+        NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ where %@", tableName,condition];
+        NSError *error;
+        BOOL flag = [db executeUpdate:sql withErrorAndBindings:&error];
+         SZLog(flag ? @"删除成功" : @"删除失败");
+        if (!flag) {
+            SZLog(@"%@",error);
+            
+        }
+        res=flag;
+    }];
+  return res;
 }
 
 + (BOOL)deleteALLObject {
@@ -407,7 +461,7 @@ static NSMutableString *gysql;
     NSError *error;
     BOOL flag = [db executeUpdate:sql withErrorAndBindings:&error];
 
-    NSLog(flag ? @"全部删除成功" : @"全部删除失败");
+     SZLog(flag ? @"全部删除成功" : @"全部删除失败");
     if (!flag) {
       res = NO;
       *rollback = YES;
@@ -459,6 +513,51 @@ static NSMutableString *gysql;
 
   return users;
 }
+
++(NSArray*)findAllDescByPrimaryKey{
+
+    GYFMDB *gydb = [GYFMDB sharedInstance];
+    
+    NSMutableArray *users = [NSMutableArray array];
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+        
+        NSString *tableName = NSStringFromClass(self.class);
+        NSString *sql = [NSString stringWithFormat:@"SELECT * FROM %@ order by pk desc", tableName];
+        FMResultSet *resultSet = [db executeQuery:sql];
+        
+        while ([resultSet next]) {
+            id model = [[self.class alloc] init];
+            
+            NSDictionary *dic = [[self class] getAllProperties];
+            
+            NSMutableArray *columeNames =
+            [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"name"]];
+            NSMutableArray *columeTypes =
+            [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"type"]];
+            
+            for (int i = 0; i < columeNames.count; i++) {
+                NSString *columeName = [columeNames objectAtIndex:i];
+                NSString *columeType = [columeTypes objectAtIndex:i];
+                
+                if ([columeType isEqualToString:SQLTEXT]) {
+                    [model setValue:[resultSet stringForColumn:columeName]
+                             forKey:columeName];
+                } else {
+                    [model setValue:[NSNumber
+                                     numberWithLongLong:
+                                     [resultSet longLongIntForColumn:columeName]]
+                             forKey:columeName];
+                }
+            }
+            [users addObject:model];
+            FMDBRelease(model);
+        }
+    }];
+    
+    return users;
+}
+
 /**
  *
  *
@@ -476,7 +575,7 @@ static NSMutableString *gysql;
     NSString *tableName = NSStringFromClass(self.class);
     NSString *sql = [NSString
         stringWithFormat:@"SELECT * FROM %@ %@", tableName, condition];
-
+      SZLog(@"%@",sql);
     NSDictionary *dic = [[self class] getAllProperties];
 
     NSMutableArray *columeNames =
@@ -508,6 +607,52 @@ static NSMutableString *gysql;
   }];
 
   return users;
+}
+
++(NSArray*)findBySql:(NSString*)sql{
+    
+    GYFMDB *gydb = [GYFMDB sharedInstance];
+    
+    NSMutableArray *users = [NSMutableArray array];
+    
+    [gydb.dbQueue inDatabase:^(FMDatabase *db) {
+        
+       // NSString *tableName = NSStringFromClass(self.class);
+      
+        SZLog(@"%@",sql);
+        
+        NSDictionary *dic = [[self class] getAllProperties];
+        
+        NSMutableArray *columeNames =
+        [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"name"]];
+        NSMutableArray *columeTypes =
+        [[NSMutableArray alloc] initWithArray:[dic objectForKey:@"type"]];
+        
+        FMResultSet *resultSet = [db executeQuery:sql];
+        
+        while ([resultSet next]) {
+            id model = [[self.class alloc] init];
+            
+            for (int i = 0; i < columeNames.count; i++) {
+                NSString *columeName = [columeNames objectAtIndex:i];
+                NSString *columeType = [columeTypes objectAtIndex:i];
+                if ([columeType isEqualToString:SQLTEXT]) {
+                    [model setValue:[resultSet stringForColumn:columeName]
+                             forKey:columeName];
+                } else {
+                    [model setValue:[NSNumber
+                                     numberWithLongLong:
+                                     [resultSet longLongIntForColumn:columeName]]
+                             forKey:columeName];
+                }
+            }
+            [users addObject:model];
+            FMDBRelease(model);
+        }
+    }];
+    
+    return users;
+    
 }
 
 //默认按id找到最后一条
@@ -683,7 +828,7 @@ static NSMutableString *gysql;
 - (NSObject * (^)(NSString *))groupby {
   return ^(NSString *string) {
     //
-    [gysql appendFormat:@" group %@", string];
+    [gysql appendFormat:@" group by %@", string];
 
     return self;
   };
