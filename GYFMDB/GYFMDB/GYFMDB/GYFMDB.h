@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#import "FMDatabase.h"
-#import "FMDatabaseQueue.h"
-#import "FMDatabaseAdditions.h"
+@class FMResultSet;
+@class FMDatabaseQueue;
+@class FMDatabase;
 
 typedef void (^QueryFinishBlock) (FMResultSet *set);
 
@@ -28,15 +28,15 @@ typedef void (^QueryFinishBlock) (FMResultSet *set);
 @property (strong, nonatomic) FMDatabaseQueue * dbQueue;
 @property (strong, nonatomic) FMDatabase *localDB;
 
--(instancetype)sharedDB;
+//-(instancetype)sharedDB;
 
-- (id)initWithDBWithPath:(NSString *)dbPath;
+//- (id)initWithDBWithPath:(NSString *)dbPath;
 
-- (void)createTableWithName:(NSString *)tableName;
+//- (void)createTableWithName:(NSString *)tableName;
 
-- (BOOL)isTableExists:(NSString *)tableName;
+//- (BOOL)isTableExists:(NSString *)tableName;
 
-- (BOOL)clearTable:(NSString *)tableName;
+//- (BOOL)clearTable:(NSString *)tableName;
 
 /***********************************/
 + (instancetype)sharedInstance;
@@ -56,7 +56,7 @@ typedef void (^QueryFinishBlock) (FMResultSet *set);
 
 
 //创建搜索历史表
-+(BOOL)createSearchListTableview;
+//+(BOOL)createSearchListTableview;
 
 
 @end

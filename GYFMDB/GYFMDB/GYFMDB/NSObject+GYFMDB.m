@@ -9,11 +9,14 @@
 #import <objc/runtime.h>
 #import "GYFMDB.h"
 #import "NSObject+GYFMDB.h"
+#import "FMDatabase.h"
+#import "FMDatabaseQueue.h"
+#import "FMDatabaseAdditions.h"
 
 static NSMutableString *gysql;
 
 @implementation NSObject (GYFMDB)
-@dynamic pk;
+//@dynamic pk;
 
 //+(void)initialize{
 //
@@ -276,7 +279,7 @@ static NSMutableString *gysql;
     // self.pk = res?[NSNumber
     // numberWithLongLong:db.lastInsertRowId].intValue:0;//添加之后返回添加的实体的自增ID,db.lastInsertRowId
 
-    SZLog(res ? @"插入成功" : @"插入失败");
+    NSLog(res ? @"插入成功" : @"插入失败");
   }];
   return res;
 }
@@ -325,7 +328,7 @@ static NSMutableString *gysql;
 
       self.pk = [NSNumber numberWithInt:pk];
 
-      SZLog(flag ? @"批量插入成功" : @"批量插入失败");
+      NSLog(flag ? @"批量插入成功" : @"批量插入失败");
       if (!flag) {
         res = NO;
         *rollback = YES;
@@ -423,7 +426,7 @@ static NSMutableString *gysql;
 
     res = [db executeUpdate:sql values:@[ primaryValue ] error:&error];
 
-     SZLog(res ? @"删除成功" : @"删除失败");
+     NSLog(res ? @"删除成功" : @"删除失败");
   }];
   return res;
 }
@@ -437,9 +440,9 @@ static NSMutableString *gysql;
         NSString *sql = [NSString stringWithFormat:@"DELETE FROM %@ where %@", tableName,condition];
         NSError *error;
         BOOL flag = [db executeUpdate:sql withErrorAndBindings:&error];
-         SZLog(flag ? @"删除成功" : @"删除失败");
+         NSLog(flag ? @"删除成功" : @"删除失败");
         if (!flag) {
-            SZLog(@"%@",error);
+            NSLog(@"%@",error);
             
         }
         res=flag;
@@ -461,7 +464,7 @@ static NSMutableString *gysql;
     NSError *error;
     BOOL flag = [db executeUpdate:sql withErrorAndBindings:&error];
 
-     SZLog(flag ? @"全部删除成功" : @"全部删除失败");
+     NSLog(flag ? @"全部删除成功" : @"全部删除失败");
     if (!flag) {
       res = NO;
       *rollback = YES;
@@ -575,7 +578,7 @@ static NSMutableString *gysql;
     NSString *tableName = NSStringFromClass(self.class);
     NSString *sql = [NSString
         stringWithFormat:@"SELECT * FROM %@ %@", tableName, condition];
-      SZLog(@"%@",sql);
+      NSLog(@"%@",sql);
     NSDictionary *dic = [[self class] getAllProperties];
 
     NSMutableArray *columeNames =
@@ -619,7 +622,7 @@ static NSMutableString *gysql;
         
        // NSString *tableName = NSStringFromClass(self.class);
       
-        SZLog(@"%@",sql);
+        NSLog(@"%@",sql);
         
         NSDictionary *dic = [[self class] getAllProperties];
         
@@ -765,7 +768,7 @@ static NSMutableString *gysql;
 }
 
 #pragma mark - Block method
-- (NSObject * (^)())select {
+- (NSObject * (^)(void))select {
   return ^() {
     //
     @synchronized(self) {
@@ -912,7 +915,7 @@ static NSMutableString *gysql;
     };
 }
 */
-- (NSMutableArray * (^)())runSql {
+- (NSMutableArray * (^)(void))runSql {
   return ^() {
 
     GYFMDB *gydb = [GYFMDB sharedInstance];

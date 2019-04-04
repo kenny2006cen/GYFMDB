@@ -10,6 +10,7 @@
 
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
+#import "FMDatabaseAdditions.h"
 #import "NSObject+GYFMDB.h"
 
 #import <objc/runtime.h>
@@ -162,7 +163,7 @@
        flag  = [db executeUpdate:mutSql withErrorAndBindings:&error];
         
         if (flag) {
-            SZLog(@"插入成功");
+            NSLog(@"插入成功");
             
           //  [self.dbQueue close];
         }
@@ -179,29 +180,24 @@
      NSString *deleteSql = [NSString stringWithFormat:@"DELETE FROM '%@' WHERE %@ = '%@'",tableName,propertyName,value];
     
     [[GYFMDB sharedInstance].dbQueue inDatabase:^(FMDatabase *db) {
-     
-        NSError *error =nil;
         
-       flag = [db executeQuery:deleteSql values:@[] error:&error];
+        flag = [db executeUpdate:deleteSql];
         
         if (flag) {
-            SZLog(@"删除成功");
+            NSLog(@"删除成功");
         }
     }];
     return flag;
 }
 
--(BOOL)deleteAllFromTable:(NSString*)tableName{
+- (BOOL)deleteAllFromTable:(NSString*)tableName{
     
     __block BOOL flag =NO;
     
     NSString *deleteSql = [NSString stringWithFormat:@"DELETE FROM '%@'",tableName];
 
     [[GYFMDB sharedInstance].dbQueue inDatabase:^(FMDatabase *db) {
-        
-        NSError *error =nil;
-        
-        flag = [db executeQuery:deleteSql values:@[] error:&error];
+        flag = [db executeUpdate:deleteSql];
     }];
     
     return flag;
