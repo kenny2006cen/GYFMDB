@@ -10,6 +10,7 @@
 
 #import "FMDatabase.h"
 #import "FMDatabaseQueue.h"
+#import "FMDatabaseAdditions.h"
 #import "NSObject+GYFMDB.h"
 
 #import <objc/runtime.h>
@@ -29,6 +30,7 @@
 
 #define PATH_CACHE    [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
 
+
 @interface GYFMDB()
 
 @end
@@ -42,6 +44,8 @@
         _localDB = [FMDatabase databaseWithPath:self.dbPath];
         
         [self configDbQueue];
+        
+        
     }
     return self;
 }
@@ -62,6 +66,12 @@
     });
     return _singleton;
 }
+
+-(void)createTables{
+
+
+}
+
 
 -(NSString*)dbPath{
 
@@ -170,10 +180,8 @@
      NSString *deleteSql = [NSString stringWithFormat:@"DELETE FROM '%@' WHERE %@ = '%@'",tableName,propertyName,value];
     
     [[GYFMDB sharedInstance].dbQueue inDatabase:^(FMDatabase *db) {
-     
-        NSError *error =nil;
         
-       flag = [db executeQuery:deleteSql values:@[] error:&error];
+        flag = [db executeUpdate:deleteSql];
         
         if (flag) {
             NSLog(@"删除成功");
@@ -182,17 +190,14 @@
     return flag;
 }
 
--(BOOL)deleteAllFromTable:(NSString*)tableName{
+- (BOOL)deleteAllFromTable:(NSString*)tableName{
     
     __block BOOL flag =NO;
     
     NSString *deleteSql = [NSString stringWithFormat:@"DELETE FROM '%@'",tableName];
 
     [[GYFMDB sharedInstance].dbQueue inDatabase:^(FMDatabase *db) {
-        
-        NSError *error =nil;
-        
-        flag = [db executeQuery:deleteSql values:@[] error:&error];
+        flag = [db executeUpdate:deleteSql];
     }];
     
     return flag;

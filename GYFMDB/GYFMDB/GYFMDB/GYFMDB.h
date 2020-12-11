@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#import "FMDatabase.h"
-#import "FMDatabaseQueue.h"
-#import "FMDatabaseAdditions.h"
+@class FMResultSet;
+@class FMDatabaseQueue;
+@class FMDatabase;
 
 typedef void (^QueryFinishBlock) (FMResultSet *set);
 
@@ -28,31 +28,15 @@ typedef void (^QueryFinishBlock) (FMResultSet *set);
 @property (strong, nonatomic) FMDatabaseQueue * dbQueue;
 @property (strong, nonatomic) FMDatabase *localDB;
 
--(instancetype)sharedDB;
+//-(instancetype)sharedDB;
 
-- (id)initWithDBWithPath:(NSString *)dbPath;
+//- (id)initWithDBWithPath:(NSString *)dbPath;
 
-- (void)createTableWithName:(NSString *)tableName;
+//- (void)createTableWithName:(NSString *)tableName;
 
-- (BOOL)isTableExists:(NSString *)tableName;
+//- (BOOL)isTableExists:(NSString *)tableName;
 
-- (BOOL)clearTable:(NSString *)tableName;
-
-/*** 以下为用keyValue形式存储数据库方法****/
-
-- (BOOL)saveObject:(id)object withKey:(NSString *)objectKey intoTable:(NSString *)tableName;
-
-- (id)getObjectByKey:(NSString *)objectKey fromTable:(NSString *)tableName;
-
-- (GYKeyValueItem *)getKeyValueItemByKey:(NSString *)objectKey fromTable:(NSString *)tableName;
-
-- (NSArray *)getAllKeyValueItemsFromTable:(NSString *)tableName;
-
-- (NSUInteger)getCountFromTable:(NSString *)tableName;
-
-- (BOOL)deleteObjectByKey:(NSString *)objectKey fromTable:(NSString *)tableName;
-
-- (BOOL)deleteObjectsByKeyArray:(NSArray *)objectKeyArray fromTable:(NSString *)tableName;
+//- (BOOL)clearTable:(NSString *)tableName;
 
 /***********************************/
 + (instancetype)sharedInstance;
@@ -69,5 +53,10 @@ typedef void (^QueryFinishBlock) (FMResultSet *set);
 -(BOOL)updateModel:(id)model FromTable:(NSString*)tableName ByCondition:(NSString*)propertyName EqualsTo:(NSString*)value;
 
 -(NSArray*)queryModels:(Class)modelClass FromTable:(NSString*)tableName;
+
+
+//创建搜索历史表
+//+(BOOL)createSearchListTableview;
+
 
 @end
