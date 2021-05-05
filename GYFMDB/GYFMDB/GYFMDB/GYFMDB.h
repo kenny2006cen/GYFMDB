@@ -38,17 +38,7 @@ typedef void (^QueryFinishBlock) (FMResultSet *set);
 
 - (BOOL)clearTable:(NSString *)tableName;
 
-/*** 以下为用keyValue形式存储数据库方法****/
-
-- (BOOL)saveObject:(id)object withKey:(NSString *)objectKey intoTable:(NSString *)tableName;
-
-- (id)getObjectByKey:(NSString *)objectKey fromTable:(NSString *)tableName;
-
-- (GYKeyValueItem *)getKeyValueItemByKey:(NSString *)objectKey fromTable:(NSString *)tableName;
-
-- (NSArray *)getAllKeyValueItemsFromTable:(NSString *)tableName;
-
-- (NSUInteger)getCountFromTable:(NSString *)tableName;
+- (NSInteger)getCountFromTable:(NSString *)tableName;
 
 - (BOOL)deleteObjectByKey:(NSString *)objectKey fromTable:(NSString *)tableName;
 
