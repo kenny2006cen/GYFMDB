@@ -28,7 +28,6 @@ typedef void (^QueryFinishBlock) (FMResultSet *set);
 @property (strong, nonatomic) FMDatabaseQueue * dbQueue;
 @property (strong, nonatomic) FMDatabase *localDB;
 
--(instancetype)sharedDB;
 
 - (id)initWithDBWithPath:(NSString *)dbPath;
 
