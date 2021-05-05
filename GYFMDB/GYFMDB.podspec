@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
 
 
   s.name         = "GYFMDB"
-  s.version      = "1.0.1"
+  s.version      = "1.0.2"
   s.summary      = "use of fmdb"
 
   s.description  = "clever use of the fmdb "

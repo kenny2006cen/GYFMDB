@@ -709,7 +709,7 @@ static NSMutableString *gysql;
 
 
 #pragma mark - Block method
-- (NSObject * (^)())select {
+- (NSObject * (^)(void))select {
   return ^() {
     //
     @synchronized(self) {
@@ -856,7 +856,7 @@ static NSMutableString *gysql;
     };
 }
 */
-- (NSMutableArray * (^)())runSql {
+- (NSMutableArray * (^)(void))runSql {
   return ^() {
 
     GYFMDB *gydb = [GYFMDB sharedInstance];

@@ -25,8 +25,8 @@
 //@property (nonatomic, strong)   NSString  *    aliasName;//别名
 
 /*链式语法*/
-@property (nonatomic,copy) NSObject*(^select)();
-@property (nonatomic,copy) NSObject*(^where)(NSString*);
+@property (nonatomic,strong) NSObject*(^select)(void);
+@property (nonatomic,strong) NSObject*(^where)(NSString*);
 @property (nonatomic,copy) NSObject*(^limit)(NSString*);
 @property (nonatomic,copy) NSObject*(^offset)(NSString*);
 @property (nonatomic,copy) NSObject*(^orderby)(NSString*);
@@ -38,9 +38,9 @@
 @property (nonatomic,copy) NSObject*(^joinWithOn)(NSString*,NSString*);
 
 
-@property (nonatomic,copy) NSMutableArray*(^runSql)();//默认返回数组
+@property (nonatomic,strong) NSMutableArray*(^runSql)(void);//默认返回数组
 
-@property (nonatomic,copy) NSObject*(^findSql)();//默认返回一个对象
+//@property (nonatomic,copy) NSObject*(^findSql)(void);//默认返回一个对象
 
 /*链式语法*/
 

@@ -8,8 +8,6 @@
 
 #import "GYFMDB.h"
 
-#import "FMDatabase.h"
-#import "FMDatabaseQueue.h"
 #import "NSObject+GYFMDB.h"
 
 #import <objc/runtime.h>
